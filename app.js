@@ -1,5 +1,9 @@
+require('dotenv').config()
+require("./loaders/mongoose")
 const Discord = require("discord.js")
+
 const messHandler = require("./handlers/messageHandler")
+
 
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES"] })
 
@@ -25,6 +29,4 @@ client.on('messageCreate', messHandler)
 
 
 
-
-
-client.login("OTczMjA3NTc0NjUwNDQ1ODg0.GQRoAD.wEi6z0mbrxv2D8J8o-GLaVOMYu4b4H6deOK9X4")
+client.login(process.env.DISCORD_BOT_TOKEN)
