@@ -7,13 +7,14 @@ const contestSchema = new mongoose.Schema({
         unique: true,
     }
 }, {
+    _id: false,
     versionKey: false
 })
 
 // Doodles are pointers to messages submited to given contest
 const doodleSchema = new mongoose.Schema({
     messId: Number,
-    constestId: ObjectId
+    constestId: mongoose.ObjectId
 }, {
     versionKey: false
 })

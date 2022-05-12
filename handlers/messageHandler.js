@@ -1,23 +1,74 @@
 require('dotenv').config()
+const contestServices = require('../services/contestServices'),
+doodleServices = require('../services/doodleServices'),
+embeds = require('../services/embeds')
 
 const prefix = process.env.PREFIX,
 modId = process.env.ADMIN_ID
 
 const messHandler = mess => {
-    // check if message is from channel the bot is supposed to be attached to
-    if(mess.channel.id != process.env.CHANNEL_ID)   return
+    try {
+        if(mess.channel.id != process.env.CHANNEL_ID)   return
 
-    // check if message was not meant for bot (doesn't starts with the prefix) or was send by a bot
-    if(!mess.content.startsWith(prefix) || mess.author.bot) return
+        // check if message was not meant for bot (doesn't starts with the prefix) or was send by a bot
+        if(!mess.content.startsWith(prefix) || mess.author.bot) return
+        
+        // ==============| COMMAND & ARGUMENTS |==============
+        const args = mess.content.slice(prefix.length).split(/ +/)
+        const command = args.shift().toLowerCase() // get the first string from args
+        
+        // handling commands
+        switch(command) {
+            // -------------| HELP |---------------
+            case 'help':
+                showHelp(mess)
+                break
+            // -------------| LIST COMMAND |---------------
+            case 'list':
+                if(mess.member.roles.cache.has(modId)) // check if message is from mod
+                    listCommand(mess, args) 
+                else 
+                    mess.channel.send({embeds: [embeds.notAuthorized]})
+                break
+            // -------------| ADD COMMAND |---------------
+            case 'add': // there's only option for adding contests
+                if(mess.member.roles.cache.has(modId))
+                    contestServices.addContest(mess, args[0])
+                else 
+                    mess.channel.send({embeds: [embeds.notAuthorized]})    
+        }
 
-    const args = mess.content.slice(prefix.length).split(/ +/)
-    const command = args.shift().toLowerCase() // get the first string from args
-    
-    if(mess.member.roles.cache.has(modId)) { // check if message is from mod
-        mess.channel.send("```It's a Mod```")
+        
+    } catch (err) {
+        mess.channel.send({embeds: [embeds.error]})
+        console.log(err)
     }
-
-    if(command == 'test') mess.channel.send("`yes`")
+    // check if message is from channel the bot is supposed to be attached to
+    
 }
+
+
+// -------------| HELP |---------------
+showHelp = mess => {
+    mess.channel.send("HELP")
+}
+
+
+// -------------| LIST COMMAND |---------------
+listCommand = (mess, args) => {
+    switch (args[0]) {
+        case 'entries':
+            doodleServices.listEntries(mess)
+            break
+        case 'contests':
+            contestServices.listContests(mess)
+            break
+        case undefined:
+            break
+    }
+}
+
+
+
 
 module.exports = messHandler
