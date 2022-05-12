@@ -53,7 +53,7 @@ const messHandler = async mess => {
 
 // -------------| HELP |---------------
 showHelp = mess => {
-    mess.channel.send("HELP")
+    mess.channel.send({embeds: [embeds.help]})
 }
 
 
@@ -67,7 +67,11 @@ listCommand = async (mess, args) => {
             case 'contests':
                 await contestServices.listContests(mess)
                 break
-            case undefined:
+            default:
+                mess.channel.send(`\`\`\`Did You mean:
+                - list entries
+                - list contests
+                \`\`\``)
                 break
         }
     else 

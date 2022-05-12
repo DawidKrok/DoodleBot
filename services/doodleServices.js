@@ -1,0 +1,1 @@
+/** @TODO : checking if doodle was deleted */

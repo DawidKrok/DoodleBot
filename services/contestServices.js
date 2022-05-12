@@ -1,6 +1,8 @@
 const Contest = require('../db/schemes').Contest
 
-/** @TODO : embed list and help (help somwhere else, not in this file)*/
+/** @TODO : embed list and help (help somwhere else, not in this file)
+ *  - updating list
+*/
 
 // &&&&&&&&&&&&&&&& | GETTING DATA | &&&&&&&&&&&&&&&
 /** @Sends : list of all contests     |=|  !list contests  |=| */
