@@ -3,8 +3,8 @@ const { MessageEmbed } = require('discord.js')
 // Place for custom embeds
 
 //---------| COLORS |-----------
-const alertColor = "#ff0000",
-mainColor = "#8338ec"
+const alertColor = process.env.ALERT_COLOR,
+mainColor = process.env.MAIN_COLOR
 
 //---------| EMBEDS |-----------
 const error = new MessageEmbed()
@@ -15,6 +15,11 @@ const error = new MessageEmbed()
 notAuthorized = new MessageEmbed()
     .setColor(alertColor)
     .setTitle("NOT AUTHORIZED!"),
+
+empty = new MessageEmbed()
+    .setColor(alertColor)
+    .setTitle("CONTESTS LIST IS EMPTY!")
+    .setDescription(`Use \`${process.env.PREFIX}add [NAME]\` to change that`),
 
 help = new MessageEmbed()
     .setColor(mainColor)
@@ -31,11 +36,15 @@ help = new MessageEmbed()
         },
         {
             name: "`=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=`",
-            value: "`COMMANDS BELOW REQUIRE AUTHENTICATED ROLE`" 
+            value: "`COMMANDS BELOW REQUIRE AUTHENTICATED ROLE`\n**`=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=`**" 
         },
         {
-            name: "`"+process.env.PREFIX+"delete [CONTEST]`\ndeletes CONTEST from list in a database ", 
-            value: "• CONTEST - name of the contest to delete (to delete a submitted art just remove it from chat)" 
+            name: "`"+process.env.PREFIX+"add [NAME]`\nAdds contest to a list in database ", 
+            value: "• NAME - name of the contest to add"
+        },
+        {
+            name: "`"+process.env.PREFIX+"delete [NAME]`\ndeletes contest from list in database ", 
+            value: "• NAME - name of the contest to delete \n(can't delete the current contest) \n(to delete a submitted art just remove it from chat)" 
         },
         {
             name: "`"+process.env.PREFIX+"list [COLLECTION]`\nList all elements belonging to the selected COLLECTION ", 
@@ -43,11 +52,11 @@ help = new MessageEmbed()
         },
         {
             name: "`"+process.env.PREFIX+"set [DAYS]`\nSets the interval between contests", 
-            value: "• DAYS - Number of days that each contest will take from now on (including current one).\nWARNING: If the current contest is already running longer than the newly set interval, it will end and th next one will start." 
+            value: "• DAYS - Number of days that each contest will take from now on (including current one).\nWARNING: If the current contest is already running longer than the newly set interval, it will end and the next one will start." 
         },
         {
-            name: "`"+process.env.PREFIX+"update [ORDER]`\nUpdates ORDER of contests in list", 
-            value: "• ORDER - new arrangement of the list (e.g. Order of contests looks like: `1 2 3 4 5`, so to swap two contests type `1 5 3 4 2`)" 
+            name: "`"+process.env.PREFIX+"update [ORDER]`\nUpdates ORDER of contests", 
+            value: "• ORDER - new arrangement of the list (e.g. Order of contests looks like: `1 2 3 4 5`, so to swap two contests type `1 5 3 4 2`)\n(Doesn't affect the current contest)" 
         },
         {
             name: "`AUTHORS:`", 
@@ -58,5 +67,6 @@ help = new MessageEmbed()
 module.exports = {
     error,
     notAuthorized,
-    help
+    empty,
+    help,
 }

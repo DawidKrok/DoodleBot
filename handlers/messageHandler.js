@@ -24,16 +24,35 @@ const messHandler = async mess => {
             case 'help':
                 await showHelp(mess)
                 break
-            // -------------| LIST COMMAND |---------------
+            // -------------| SUBMIT |---------------
+            case 'submit':
+                break
+            // -------------| LIST |---------------
             case 'list':
                 await listCommand(mess, args) 
                 break
-            // -------------| ADD COMMAND |---------------
+            // -------------| ADD |---------------
             case 'add': // there's only option for adding contests
                 if(mess.member.roles.cache.has(modId))
                     await contestServices.addContest(mess, args[0])
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
+                break
+            // -----------| DELETE |--------------
+            case 'delete':
+                if(mess.member.roles.cache.has(modId))
+                    await contestServices.deleteContest(mess, args[0])
+                else 
+                    mess.channel.send({embeds: [embeds.notAuthorized]})   
+                break
+            // -----------| UPDATE |--------------
+            case 'update':
+                if(mess.member.roles.cache.has(modId))
+                    await contestServices.updateContestList(mess, args)
+                else 
+                    mess.channel.send({embeds: [embeds.notAuthorized]})   
+                break
+            // -------------| INTERVAL GET & SET |---------------
             case 'interval':
                 await timeGapServices.getInterval(mess)
                 break
