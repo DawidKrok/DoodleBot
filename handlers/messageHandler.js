@@ -1,12 +1,13 @@
 require('dotenv').config()
 const contestServices = require('../services/contestServices'),
 doodleServices = require('../services/doodleServices'),
+timeGapServices = require('../services/intervalServices'),
 embeds = require('../services/embeds')
 
 const prefix = process.env.PREFIX,
 modId = process.env.ADMIN_ID
 
-const messHandler = mess => {
+const messHandler = async mess => {
     try {
         if(mess.channel.id != process.env.CHANNEL_ID)   return
 
@@ -21,30 +22,32 @@ const messHandler = mess => {
         switch(command) {
             // -------------| HELP |---------------
             case 'help':
-                showHelp(mess)
+                await showHelp(mess)
                 break
             // -------------| LIST COMMAND |---------------
             case 'list':
-                if(mess.member.roles.cache.has(modId)) // check if message is from mod
-                    listCommand(mess, args) 
-                else 
-                    mess.channel.send({embeds: [embeds.notAuthorized]})
+                await listCommand(mess, args) 
                 break
             // -------------| ADD COMMAND |---------------
             case 'add': // there's only option for adding contests
                 if(mess.member.roles.cache.has(modId))
-                    contestServices.addContest(mess, args[0])
+                    await contestServices.addContest(mess, args[0])
                 else 
-                    mess.channel.send({embeds: [embeds.notAuthorized]})    
+                    mess.channel.send({embeds: [embeds.notAuthorized]})   
+            case 'interval':
+                await timeGapServices.getInterval(mess)
+                break
+            case 'set':
+                await timeGapServices.setInterval(mess, args[0])
+                break
         }
 
-        
+
     } catch (err) {
         mess.channel.send({embeds: [embeds.error]})
         console.log(err)
     }
     // check if message is from channel the bot is supposed to be attached to
-    
 }
 
 
@@ -55,17 +58,20 @@ showHelp = mess => {
 
 
 // -------------| LIST COMMAND |---------------
-listCommand = (mess, args) => {
-    switch (args[0]) {
-        case 'entries':
-            doodleServices.listEntries(mess)
-            break
-        case 'contests':
-            contestServices.listContests(mess)
-            break
-        case undefined:
-            break
-    }
+listCommand = async (mess, args) => {
+    if(mess.member.roles.cache.has(modId)) // check if message is from mod
+        switch (args[0]) {
+            case 'entries':
+                await doodleServices.listEntries(mess)
+                break
+            case 'contests':
+                await contestServices.listContests(mess)
+                break
+            case undefined:
+                break
+        }
+    else 
+        mess.channel.send({embeds: [embeds.notAuthorized]})
 }
 
 
