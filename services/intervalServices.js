@@ -12,13 +12,13 @@ getInterval = async mess => {
 
 /** @Updates : interval.days value in database      |=|  !set  @days  |=|*/
 setInterval = async (mess, days) => {
-    if(!days || days < 0)  
+    if(!days || days <= 0)  
         return mess.channel.send("`Invalid argument [DAYS]`")
 
     const interval = await Interval.findOne({}, {}, { sort: {'created_at' : -1} })
 
     interval.days = days
-    // interval.lastContestAt = new Date().toISOString().split('T')[0]
+    interval.lastContestAt = new Date().toISOString().split('T')[0]
     await interval.save()
 
     mess.channel.send(`Interval successfully changed to ${days} days!`)

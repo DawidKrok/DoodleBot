@@ -2,9 +2,9 @@ const mongoose = require("mongoose")
 
 // Object with information about contests
 const contestSchema = new mongoose.Schema({    
-    name: {
-        type: String,
-        unique: true,
+    namesList: {
+        type: 'array',
+        items: { type: String, uniqueItems: true },
     }
 }, {
     versionKey: false
@@ -12,8 +12,7 @@ const contestSchema = new mongoose.Schema({
 
 // Doodles are pointers to messages submited to given contest
 const doodleSchema = new mongoose.Schema({
-    messId: Number,
-    constestName: String
+    messIds: [Number]
 }, {
     versionKey: false
 })
