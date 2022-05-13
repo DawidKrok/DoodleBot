@@ -107,7 +107,7 @@ changeOrder = (array, order) => {
 
     order.forEach(n => {
         // check for invalid indexes in order
-        if(n <= 0 || n > max_n)     
+        if(n <= 0 || n > max_n || n >= array.length)     
             throw "Exceeded"
 
         // check if elem is already in updated List. That means that order is not made of consecutive integers
@@ -133,5 +133,6 @@ module.exports = {
     addContest,
     listContests,
     deleteContest,
-    updateContestList
+    updateContestList,
+    changeOrder
 }
