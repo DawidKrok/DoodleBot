@@ -29,7 +29,7 @@ const messHandler = async mess => {
                 break
             // -------------| LIST |---------------
             case 'list':
-                await listCommand(mess, args) 
+                await contestServices.listContests(mess) 
                 break
             // -------------| ADD |---------------
             case 'add': // there's only option for adding contests
@@ -77,25 +77,25 @@ showHelp = mess => {
 
 
 // -------------| LIST COMMAND |---------------
-listCommand = async (mess, args) => {
-    if(mess.member.roles.cache.has(modId)) // check if message is from mod
-        switch (args[0]) {
-            case 'entries':
-                await doodleServices.listEntries(mess)
-                break
-            case 'contests':
-                await contestServices.listContests(mess)
-                break
-            default:
-                mess.channel.send(`\`\`\`Did You mean:
-                - list entries
-                - list contests
-                \`\`\``)
-                break
-        }
-    else 
-        mess.channel.send({embeds: [embeds.notAuthorized]})
-}
+// listCommand = async (mess, args) => {
+//     if(mess.member.roles.cache.has(modId)) // check if message is from mod
+//         switch (args[0]) {
+//             case 'entries':
+//                 await doodleServices.listEntries(mess)
+//                 break
+//             case 'contests':
+//                 await contestServices.listContests(mess)
+//                 break
+//             default:
+//                 mess.channel.send(`\`\`\`Did You mean:
+//                 - list entries
+//                 - list contests
+//                 \`\`\``)
+//                 break
+//         }
+//     else 
+//         mess.channel.send({embeds: [embeds.notAuthorized]})
+// }
 
 
 

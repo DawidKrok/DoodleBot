@@ -31,6 +31,10 @@ help = new MessageEmbed()
             value: "@TODO : reaction system (few important ones and all the rest done like 10 for one bonus point or smth)\n\nCOMMANDS:" 
         },
         {
+            name: "`"+process.env.PREFIX+"list`", 
+            value: "\nLists all scheduled contests " 
+        },
+        {
             name: "`"+process.env.PREFIX+"submit `", 
             value: "@TODO : submission system" 
         },
@@ -46,17 +50,14 @@ help = new MessageEmbed()
             name: "`"+process.env.PREFIX+"delete [NAME]`\ndeletes contest from list in database ", 
             value: "• NAME - name of the contest to delete \n(can't delete the current contest) \n(to delete a submitted art just remove it from chat)" 
         },
-        {
-            name: "`"+process.env.PREFIX+"list [COLLECTION]`\nList all elements belonging to the selected COLLECTION ", 
-            value: "COLLECTIONS:\n• `contests` - lists all contests\n• `entries` - lists all entries submitted by server members for current contest" 
-        },
+        
         {
             name: "`"+process.env.PREFIX+"set [DAYS]`\nSets the interval between contests", 
-            value: "• DAYS - Number of days that each contest will take from now on (including current one).\nWARNING: If the current contest is already running longer than the newly set interval, it will end and the next one will start." 
+            value: "• DAYS - Number of days that each contest will take from now on (including current one).\n`WARNING:` If the current contest is already running longer than the newly set interval, it will end and the next one will start." 
         },
         {
             name: "`"+process.env.PREFIX+"update [ORDER]`\nUpdates ORDER of contests", 
-            value: "• ORDER - new arrangement of the list (e.g. Order of contests looks like: `1 2 3 4 5 6 7`, so to swap two contests type `1 5 3 4 2`)\n(Doesn't affect the current contest)" 
+            value: "• ORDER - new arrangement of the list (e.g. Order of contests looks like: `1 2 3 4 5 6 7`, so to swap contests type `1 5 2 4 3`)\n(Doesn't affect the current contest)" 
         },
         {
             name: "`AUTHORS:`", 
