@@ -1,13 +1,13 @@
-const Interval = require('../db/schemes').Interval
+const { Server } = require('../db/schemes')
 
 /** @TODO : Probably gonna change that to serve multiple guilds */
 
 // &&&&&&&&&&&&&&&& | GETTING DATA | &&&&&&&&&&&&&&&
 /** @Sends : interval in days     |=|  !interval  |=| */
 getInterval = async mess => {
-    const interval = await Interval.findOne({}, {}, { sort: {'created_at' : -1} }).lean()
+    const server = await Server.findOne().lean()
 
-    mess.channel.send(`\`Current interval is ${interval.days} days\``)
+    mess.channel.send(`\`Current interval is ${server.days} days\``)
 }
 
 /** @Updates : interval.days value in database      |=|  !set  @days  |=|*/
@@ -15,11 +15,10 @@ setInterval = async (mess, days) => {
     if(!days || days <= 0)  
         return mess.channel.send("`Invalid argument [DAYS]`")
 
-    const interval = await Interval.findOne({}, {}, { sort: {'created_at' : -1} })
+    const server = await Server.findOne()
 
-    interval.days = days
-    interval.lastContestAt = new Date().toISOString().split('T')[0]
-    await interval.save()
+    server.days = days
+    await server.save()
 
     mess.channel.send(`Interval successfully changed to ${days} days!`)
 }

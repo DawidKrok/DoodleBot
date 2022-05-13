@@ -56,7 +56,7 @@ help = new MessageEmbed()
         },
         {
             name: "`"+process.env.PREFIX+"update [ORDER]`\nUpdates ORDER of contests", 
-            value: "• ORDER - new arrangement of the list (e.g. Order of contests looks like: `1 2 3 4 5`, so to swap two contests type `1 5 3 4 2`)\n(Doesn't affect the current contest)" 
+            value: "• ORDER - new arrangement of the list (e.g. Order of contests looks like: `1 2 3 4 5 6 7`, so to swap two contests type `1 5 3 4 2`)\n(Doesn't affect the current contest)" 
         },
         {
             name: "`AUTHORS:`", 

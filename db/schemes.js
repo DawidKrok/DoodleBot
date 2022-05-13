@@ -1,39 +1,29 @@
 const mongoose = require("mongoose")
 
-// Object with information about contests
-const contestSchema = new mongoose.Schema({    
+const serverSchema = new mongoose.Schema({    
+    // list of all scheduled contests
     namesList: {
         type: 'array',
         items: { type: String, uniqueItems: true },
+    },
+    // IDs of currently submitted arts
+    messIds: [Number], // perhaps they can be same? /\ \/
+    days: {
+        type: Number,
+        default: 3
+    },
+    lastContestAt: {
+        type: Date,
+        default: new Date().toISOString().split('T')[0]
     }
-}, {
-    versionKey: false
-})
-
-// Doodles are pointers to messages submited to given contest
-const doodleSchema = new mongoose.Schema({
-    messIds: [Number]
-}, {
-    versionKey: false
-})
-
-// for saving how often coontests should occur
-const intervalSchema = new mongoose.Schema({    
-    days: Number,
-    lastContestAt: Date
 }, {
     versionKey: false
 })
 
 
 // models with declared Schema
-const Contest = new mongoose.model("Contest", contestSchema)
-const Doodle = new mongoose.model("Doodle", doodleSchema)
-const Interval = new mongoose.model("Interval", intervalSchema)
-
+const Server = new mongoose.model("Servers", serverSchema)
 
 module.exports = {
-    Contest,
-    Doodle,
-    Interval,
+    Server
 } 
