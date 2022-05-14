@@ -25,6 +25,10 @@ artSubmitted = new MessageEmbed()
 .setColor(mainColor)
 .setTitle("ART SUCCESSFULLY SUBMITTED!"),
 
+tie = new MessageEmbed()
+.setColor(mainColor)
+.setTitle("IT'S A TIE!"),
+
 help = new MessageEmbed()
     .setColor(mainColor)
     .setTitle("DOODLES BOT HELP")
@@ -44,7 +48,7 @@ help = new MessageEmbed()
         },
         {
             name: "`"+process.env.PREFIX+"submit`", 
-            value: "Submits attached art to the contest. Reactions under this message will determine its score." 
+            value: "Submits attached art to the contest. Reactions under this message will determine its score.\n(PUT PREFERED ASPECT RATIO)" 
         },
         {
             name: "`=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=`",
@@ -78,5 +82,6 @@ module.exports = {
     notAuthorized,
     empty,
     artSubmitted,
+    tie,
     help,
 }

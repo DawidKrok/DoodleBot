@@ -1,3 +1,4 @@
+const Discord = require("discord.js")
 const { Server } = require('../db/schemes')
 const embeds = require('./embeds')
 const Canvas = require('canvas')
@@ -7,6 +8,10 @@ const Canvas = require('canvas')
 */
 
 const r1 = '🔥', r2='🎨', r3='🧐', r4 = '🦎'
+
+let background
+Canvas.loadImage('./rescources/winners_bg.png').then(img => background = img) // path like for app.js
+Canvas.registerFont('./rescources/Roboto-Black.ttf', {family: "Roboto"}) // load Roboto font
 
 // &&&&&&&&&&&&&&&& | SETTING DATA | &&&&&&&&&&&&&&&
 /** @Adds : new Entry to database     |=|  !submit @attached_image  |=|*/
@@ -48,7 +53,6 @@ showWinners = async client => {
         await channel.messages.fetch(m_id.toString())
         .then(mess => {
             r = mess.reactions.cache
-            // console.log(mess.attachments.first().attachment)
             score = r.get(r1).count + r.get(r2).count + r.get(r3).count + r.get(r4).count - 4
             console.log(score)
 
@@ -60,21 +64,61 @@ showWinners = async client => {
                 winners.push(mess)
         })
         .catch(err => {
+            // message was not found (probably deleted)
+            if(err.httpStatus == '404') return
+
             channel.send({embeds: [embeds.error]})
             console.log(err)
         })
     }))
 
     if(winners.length > 1)
-        channel.send("IT'S A TIE!")
+        channel.send({embeds: [embeds.tie]})
 
-    // drawWinnersCanvas(winners)
+    await drawWinnersCanvas(winners, server.namesList[0])
+
+    // channel.send()
 }
+/** draws a picture with winning art, name of @contest and author's name and avatar   */
+drawWinnersCanvas = async (winners, contest) => {
+    winners.forEach(async mess => {
+        const canvas =  Canvas.createCanvas(1000, 900),
+        ctx = canvas.getContext('2d'),
+        avatar = await Canvas.loadImage(mess.author.displayAvatarURL({ format: 'jpg' })),
+        art = await Canvas.loadImage(mess.attachments.first().attachment)
 
-drawWinnersCanvas = async (winners) => {
-    winners.forEach(mess => {
-        new Canvas.Canvas()
-    });    
+        // put everything on canva
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
+        
+        //----------| PUTTING TEXT |----------
+        ctx.font = "75px 'Roboto'"
+        ctx.strokeStyle = "rgb(27, 11, 59)"
+        ctx.lineWidth = 20
+        ctx.fillStyle = "white"
+        // Contest Name
+        ctx.lineWidth = 14
+        ctx.strokeText(contest, 300, 85)
+        ctx.fillText(contest, 300, 85)
+        // Author Name
+        ctx.font = "50px 'Roboto'"
+        ctx.strokeText(mess.author.username, 200, 790)
+        ctx.fillText(mess.author.username, 200, 790)
+
+        //----------| ADDING IMAGE |----------135 685
+        ctx.drawImage(art, 225, 135, 550, 550)
+
+
+        //----------| AVATAR CY(R)CLE |----------
+        ctx.beginPath()
+        ctx.arc(875, 775, 50, 0, Math.PI*2, true)
+        ctx.closePath()
+        ctx.clip()
+        ctx.drawImage(avatar, 825, 725, 100, 100)
+
+        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "winner.png")
+        mess.channel.send({files: [attachment]})
+        .then(msg => msg.pin().then(msg => msg.delete())) // pin message and delete information about bot pinning message
+    })   
 }
 
 
