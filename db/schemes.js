@@ -3,10 +3,13 @@ const mongoose = require("mongoose")
 const serverSchema = new mongoose.Schema({    
     guildId: String,
     channelId: String,
+    // Roles that have access to extra commands
+    authorizedRolesIds: [Number], 
+    
     // list of all scheduled contests
     namesList: [String],
     // IDs of currently submitted arts
-    messIds: [Number], 
+    messIds: [String], 
     days: {
         type: Number,
         default: 3

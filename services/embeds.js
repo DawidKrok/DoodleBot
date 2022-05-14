@@ -32,15 +32,19 @@ help = new MessageEmbed()
     .addFields(
         {
             name: "Submitted art is rated based on it's reactions", 
-            value: "@TODO : reaction system (few important ones and all the rest done like 10 for one bonus point or smth)\n\nCOMMANDS:" 
+            value: "Reacting with one of emojis listed below adds 1 point to the art's score:\n• 🧐 - for smart idea\n• 🔥 - for great execution\n• 🎨 - for visible skills\n• 🦎 - for lizard\nThe art with the most points at the end of the contest wins.\n\nCOMMANDS:" 
+        },
+        {
+            name: "`"+process.env.PREFIX+"interval`", 
+            value: "Sends the interval between contests (in days) " 
         },
         {
             name: "`"+process.env.PREFIX+"list`", 
             value: "\nLists all scheduled contests " 
         },
         {
-            name: "`"+process.env.PREFIX+"submit `", 
-            value: "@TODO : submission system" 
+            name: "`"+process.env.PREFIX+"submit`", 
+            value: "Submits attached art to the contest. Reactions under this message will determine its score." 
         },
         {
             name: "`=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=`",

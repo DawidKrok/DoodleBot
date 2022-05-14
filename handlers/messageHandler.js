@@ -1,7 +1,7 @@
 require('dotenv').config()
 const contestServices = require('../services/contestServices'),
 doodleServices = require('../services/doodleServices'),
-timeGapServices = require('../services/intervalServices'),
+intervalServices = require('../services/intervalServices'),
 embeds = require('../services/embeds')
 
 const prefix = process.env.PREFIX,
@@ -55,10 +55,15 @@ const messHandler = async mess => {
                 break
             // -------------| INTERVAL GET & SET |---------------
             case 'interval':
-                await timeGapServices.getInterval(mess)
+                await intervalServices.getInterval(mess)
                 break
             case 'set':
-                await timeGapServices.setInterval(mess, args[0])
+                if(mess.member.roles.cache.has(modId))
+                    await intervalServices.setInterval(mess, args[0])
+                else 
+                    mess.channel.send({embeds: [embeds.notAuthorized]})   
+                break
+            case 'test':
                 break
         }
 
