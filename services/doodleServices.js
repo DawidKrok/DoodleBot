@@ -7,22 +7,32 @@ const embeds = require('./embeds')
 
 
 // &&&&&&&&&&&&&&&& | SETTING DATA | &&&&&&&&&&&&&&&
-/** @Adds : new Entry to database     |=|  !add @name  |=|*/
-addEntry = async (mess, name) => {
-    if(!name)  
-        return mess.channel.send("`Invalid argument``[NAME]`")
+/** @Adds : new Entry to database     |=|  !submit @attached_image  |=|*/
+addEntry = async mess => {
+    if(mess.attachments.size == 0)
+        return mess.channel.send("`Attach art to Your submission`")
+    if(mess.attachments.size > 1)
+        return mess.channel.send("`Cannot submit more than one art`")
+    console.log(mess.attachments)
+   
 
     Server.updateOne({}, {
-        $addToSet: {namesList: name}
+        $addToSet: {messIds: mess.id}
     }, (err, data) => {
-        if(err) return console.log(err)
+        // just in case I guess?
+        if(err || !data.modifiedCount) {
+            mess.channel.send({embeds: [embeds.error]})
+            return console.log(err? err : "doodleServices.AddEntry() : for some reason art wasn't submitted")
+        }
 
-        // if name was added there'll be modifiedCount set in data to 1
-        if(!data.modifiedCount)     // list wasn't modified => name was a duplicate  
-            return mess.channel.send(`\`There is already a contest with name "${name}"!\``)
-        
-        mess.channel.send(`Contest \`${name}\` successfully added to list!`)
+        mess.channel.send({embeds : [embeds.artSubmitted]})
+        .then(msg => setTimeout(() => msg.delete(), 4000))
+        .catch(err => console.log(err))
     })
+}
+
+showWinners = async mess => {
+
 }
 
 

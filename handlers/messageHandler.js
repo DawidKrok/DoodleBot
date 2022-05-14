@@ -26,6 +26,7 @@ const messHandler = async mess => {
                 break
             // -------------| SUBMIT |---------------
             case 'submit':
+                await doodleServices.addEntry(mess)
                 break
             // -------------| LIST |---------------
             case 'list':

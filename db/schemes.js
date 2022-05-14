@@ -1,13 +1,12 @@
 const mongoose = require("mongoose")
 
 const serverSchema = new mongoose.Schema({    
+    guildId: String,
+    channelId: String,
     // list of all scheduled contests
-    namesList: {
-        type: 'array',
-        items: { type: String, uniqueItems: true },
-    },
+    namesList: [String],
     // IDs of currently submitted arts
-    messIds: [Number], // perhaps they can be same? /\ \/
+    messIds: [Number], 
     days: {
         type: Number,
         default: 3
@@ -15,7 +14,7 @@ const serverSchema = new mongoose.Schema({
     lastContestAt: {
         type: Date,
         default: new Date().toISOString().split('T')[0]
-    }
+    },
 }, {
     versionKey: false
 })

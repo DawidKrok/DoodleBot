@@ -21,6 +21,10 @@ empty = new MessageEmbed()
     .setTitle("CONTESTS LIST IS EMPTY!")
     .setDescription(`Use \`${process.env.PREFIX}add [NAME]\` to change that`),
 
+artSubmitted = new MessageEmbed()
+.setColor(mainColor)
+.setTitle("ART SUCCESSFULLY SUBMITTED!"),
+
 help = new MessageEmbed()
     .setColor(mainColor)
     .setTitle("DOODLES BOT HELP")
@@ -69,5 +73,6 @@ module.exports = {
     error,
     notAuthorized,
     empty,
+    artSubmitted,
     help,
 }
