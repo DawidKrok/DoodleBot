@@ -55,8 +55,16 @@ help = new MessageEmbed()
             value: "Submits attached art to the contest. Reactions under this message will determine its score.\n(PUT PREFERED ASPECT RATIO)" 
         },
         {
-            name: "`=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=`",
-            value: "`COMMANDS BELOW REQUIRE AUTHENTICATED ROLE`\n**`=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=`**" 
+            name: "`=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+`",
+            value: "`COMMANDS BELOW REQUIRE AUTHORIZED ROLE`\n**`=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+`**" 
+        },
+        {
+            name: "`"+process.env.PREFIX+"authorize [ROLE_NAME]`\nAuthorizes a role  ", 
+            value: "• ROLE_NAME - name of the role to authorize. From now on everyone with this role can use commands from this list.\n(Owner of server is always authorized)"
+        },
+        {
+            name: "`"+process.env.PREFIX+"unauthorize [ROLE_NAME]`\nUnauthorizes a role", 
+            value: "• ROLE_NAME - name of the role to unauthorize."
         },
         {
             name: "`"+process.env.PREFIX+"add [NAME]`\nAdds contest to a list in database ", 

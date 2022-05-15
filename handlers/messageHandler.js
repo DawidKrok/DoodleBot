@@ -1,12 +1,12 @@
 require('dotenv').config()
+const { Server } = require('../db/schemes')
 const contestServices = require('../services/contestServices'),
 doodleServices = require('../services/doodleServices'),
 intervalServices = require('../services/intervalServices'),
 guildServices = require('../services/guildServices'),
 embeds = require('../services/embeds')
 
-const prefix = process.env.PREFIX,
-modId = process.env.ADMIN_ID
+const prefix = process.env.PREFIX
 
 const messHandler = async mess => {
     try {
@@ -16,6 +16,18 @@ const messHandler = async mess => {
         // ==============| COMMAND & ARGUMENTS |==============
         const args = mess.content.slice(prefix.length).split(/ +/)
         const command = args.shift().toLowerCase() // get the first string from args
+
+        const server = await Server.findOne({guildId: mess.guild.id}).lean() 
+
+        // determine if user is authorized
+        authorized = mess.guild.ownerId == mess.author.id // if author is owner
+
+        if(!authorized) // if author is not an owner
+            server.authorizedRolesIds.forEach(r_id => {
+                if(mess.member.roles.cache.has(r_id))
+                    authorized = true
+            })
+
 
         // handling commands
         switch(command) {
@@ -33,21 +45,21 @@ const messHandler = async mess => {
                 break
             // -------------| ADD |---------------
             case 'add': // there's only option for adding contests
-                if(mess.member.roles.cache.has(modId))
+                if(authorized)
                     await contestServices.addContest(mess, args[0])
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
             // -----------| DELETE |--------------
             case 'delete':
-                if(mess.member.roles.cache.has(modId))
+                if(authorized)
                     await contestServices.deleteContest(mess, args[0])
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
             // -----------| UPDATE |--------------
             case 'update':
-                if(mess.member.roles.cache.has(modId))
+                if(authorized)
                     await contestServices.updateContestList(mess, args)
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
@@ -57,21 +69,25 @@ const messHandler = async mess => {
                 await intervalServices.getInterval(mess)
                 break
             case 'set':
-                if(mess.member.roles.cache.has(modId))
+                if(authorized)
                     await intervalServices.setInterval(mess, args[0])
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
             // -------------| ADD / REMOVE ROLE |---------------
             case 'authorize':
-                await guildServices.addRole(mess, args[0])
+                if(authorized)
+                    await guildServices.addRole(mess, args[0])
+                else 
+                    mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
             case 'unauthorize':
-                await guildServices.removeRole(mess, args[0])
+                if(authorized)
+                    await guildServices.removeRole(mess, args[0])
+                else 
+                    mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
         }
-
-
     } catch (err) {
         mess.channel.send({embeds: [embeds.error]})
         console.log(err)
@@ -82,7 +98,7 @@ const messHandler = async mess => {
 
 // -------------| LIST COMMAND |---------------
 // listCommand = async (mess, args) => {
-//     if(mess.member.roles.cache.has(modId)) // check if message is from mod
+//     if(authorized) // check if message is from mod
 //         switch (args[0]) {
 //             case 'entries':
 //                 await doodleServices.listEntries(mess)
