@@ -25,7 +25,7 @@ listContests = async mess => {
     // Add entry for every contest, with it's name and date
     contests.forEach(c => {
         const c_date = new Date(server.lastContestAt.getTime()) // to make a clone
-        c_date.setDate(c_date.getDate() + con_no++*server.days) // to increment date by interval.days
+        c_date.setDate(c_date.getDate() + con_no++*server.interval) // to increment date by interval.days
         
         listEmbed.addField("• "+c, c_date.toISOString().split('T')[0])  
     })
