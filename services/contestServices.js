@@ -4,8 +4,6 @@ const embeds = require('./embeds')
 
 /** @TODO : 
  *  - _ as spaces
- *  - next command that ends curr contest
- *  - in embeds.js make function for making end embeds
 */
 
 // &&&&&&&&&&&&&&&& | GETTING DATA | &&&&&&&&&&&&&&&
@@ -42,6 +40,8 @@ addContest = async (mess, name) => {
     if(!name)  
         return mess.channel.send("`Invalid argument``[NAME]`")
 
+    name = name.replace(/_/g, ' ')
+
     Server.updateOne({}, {
         $addToSet: {namesList: name}
     }, (err, data) => {
@@ -59,6 +59,8 @@ addContest = async (mess, name) => {
 deleteContest = async (mess, name) => {
     if(!name)  
         return mess.channel.send("`Invalid argument [NAME]`")
+
+        name = name.replace(/_/g, ' ')
 
     Server.updateOne({}, {
         $pull: {namesList: name}

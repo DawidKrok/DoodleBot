@@ -3,10 +3,6 @@ const { Server } = require('../db/schemes')
 const embeds = require('./embeds')
 const Canvas = require('canvas')
 
-/** @TODO : checking if doodle was deleted 
- *  - pin winning message
-*/
-
 const r1 = '🔥', r2='🎨', r3='🧐', r4 = '🦎'
 
 let background

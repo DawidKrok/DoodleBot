@@ -14,8 +14,14 @@ client.once("ready", () => console.log("\x1b[42m", "Doodles is online!", "\x1b[0
 client.on('messageCreate', messHandler)
 
 
-
-
+/** TODO :
+ *  - determine prefered aspect ratio
+ *  - winner banner
+ *  - total points on winner banner
+ *  - doodle icon
+ *  - more servers compatibility
+ */
+// check for contests winners every day
 
 
 
