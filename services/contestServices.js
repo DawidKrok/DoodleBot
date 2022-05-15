@@ -38,7 +38,7 @@ listContests = async mess => {
 /** @Adds : new Contest to database     |=|  !add @name  |=|*/
 addContest = async (mess, name) => {
     if(!name)  
-        return mess.channel.send("`Invalid argument``[NAME]`")
+        return mess.channel.send("`Invalid argument [NAME]`")
 
     name = name.replace(/_/g, ' ')
 

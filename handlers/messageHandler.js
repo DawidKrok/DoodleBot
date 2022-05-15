@@ -2,6 +2,7 @@ require('dotenv').config()
 const contestServices = require('../services/contestServices'),
 doodleServices = require('../services/doodleServices'),
 intervalServices = require('../services/intervalServices'),
+guildServices = require('../services/guildServices'),
 embeds = require('../services/embeds')
 
 const prefix = process.env.PREFIX,
@@ -9,20 +10,18 @@ modId = process.env.ADMIN_ID
 
 const messHandler = async mess => {
     try {
-        if(mess.channel.id != process.env.CHANNEL_ID)   return
-
         // check if message was not meant for bot (doesn't starts with the prefix) or was send by a bot
         if(!mess.content.startsWith(prefix) || mess.author.bot) return
         
         // ==============| COMMAND & ARGUMENTS |==============
         const args = mess.content.slice(prefix.length).split(/ +/)
         const command = args.shift().toLowerCase() // get the first string from args
-        
+
         // handling commands
         switch(command) {
             // -------------| HELP |---------------
             case 'help':
-                await showHelp(mess)
+                mess.channel.send({embeds: [embeds.help]})
                 break
             // -------------| SUBMIT |---------------
             case 'submit':
@@ -63,7 +62,12 @@ const messHandler = async mess => {
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
-            case 'test':
+            // -------------| ADD / REMOVE ROLE |---------------
+            case 'authorize':
+                await guildServices.addRole(mess, args[0])
+                break
+            case 'unauthorize':
+                await guildServices.removeRole(mess, args[0])
                 break
         }
 
@@ -72,14 +76,8 @@ const messHandler = async mess => {
         mess.channel.send({embeds: [embeds.error]})
         console.log(err)
     }
-    // check if message is from channel the bot is supposed to be attached to
 }
 
-
-// -------------| HELP |---------------
-showHelp = mess => {
-    mess.channel.send({embeds: [embeds.help]})
-}
 
 
 // -------------| LIST COMMAND |---------------
