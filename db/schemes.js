@@ -1,8 +1,8 @@
 const mongoose = require("mongoose")
 
 const serverSchema = new mongoose.Schema({    
-    guildId: String,
-    channelId: String,
+    guildId: Number,
+    channelId: Number,
     // Roles that have access to extra commands
     authorizedRolesIds: [Number], 
     

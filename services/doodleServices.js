@@ -40,48 +40,73 @@ addEntry = async mess => {
     })
 }
 
-// showsWinners in every Server
-showWinners = async client => {
+/** showsWinners in every Server 
+ * @is_channel : whether client is channel or discord client */
+showWinners = async (client, is_channel = false) => {
     const server = await Server.findOne()
+
+    if(!is_channel) {
+        const guild = await client.guilds.cache.get(process.env.GUILD_ID)
+        channel = await guild.channels.cache.get(process.env.CHANNEL_ID)
+    } else 
+        channel = client
+
+    // --------------| DETERMINING WINNER |-------------
+    if(server.messIds.length != 0) {
+        winners = [] // array of current contest winners
+        highest_score = 0
+        // count score of every art
+        await Promise.all(server.messIds.map(async m_id => {
+            await channel.messages.fetch(m_id.toString())
+            .then(mess => {
+                r = mess.reactions.cache
+                score = r.get(r1).count + r.get(r2).count + r.get(r3).count + r.get(r4).count - 4
+                console.log(score)
     
-    const guild = await client.guilds.cache.get(process.env.GUILD_ID)
-    const channel = await guild.channels.cache.get(process.env.CHANNEL_ID)
+                if(score > highest_score) {
+                    winners = [mess] // reset winners array
+                    highest_score = score
+                }
+                else if(score == highest_score)
+                    winners.push(mess)
+            })
+            .catch(err => {
+                // message was not found (probably deleted)
+                if(err.httpStatus == '404') return
+    
+                channel.send({embeds: [embeds.error]})
+                console.log(err)
+            })
+        }))
+    
+        // send information about tie (more than one art with the same score)
+        if(winners.length > 1)
+            channel.send({embeds: [embeds.tie]})
+    
+        await drawWinnersCanvas(winners, server.namesList[0])
 
-    winners = [] // array of current contest winners
-    highest_score = 0
-    await Promise.all(server.messIds.map(async m_id => {
-        await channel.messages.fetch(m_id.toString())
-        .then(mess => {
-            r = mess.reactions.cache
-            score = r.get(r1).count + r.get(r2).count + r.get(r3).count + r.get(r4).count - 4
-            console.log(score)
+    } else // noone submited art :c
+        channel.send({embeds: [embeds.noArt]})
 
-            if(score > highest_score) {
-                winners = [mess] // reset winners array
-                highest_score = score
-            }
-            else if(score == highest_score)
-                winners.push(mess)
-        })
-        .catch(err => {
-            // message was not found (probably deleted)
-            if(err.httpStatus == '404') return
+    server.messIds = []
+    // ------------| NEXT CONTEST |-----------
+    // remove current contest from list
+    server.namesList.shift()
+    server.save()
+        
+    if(server.namesList==0) // no contests on the list
+        return channel.send({embeds: [embeds.empty]})
 
-            channel.send({embeds: [embeds.error]})
-            console.log(err)
-        })
-    }))
-
-    if(winners.length > 1)
-        channel.send({embeds: [embeds.tie]})
-
-    await drawWinnersCanvas(winners, server.namesList[0])
-
-    // channel.send()
+    // send information about next contest
+    channel.send({embeds: [
+        new Discord.MessageEmbed()
+            .setColor(process.env.MAIN_COLOR)
+            .setTitle(`The next contest is: ${server.namesList[0]}`)
+    ]})
 }
 /** draws a picture with winning art, name of @contest and author's name and avatar   */
 drawWinnersCanvas = async (winners, contest) => {
-    winners.forEach(async mess => {
+    await Promise.all(winners.map(async mess => {
         const canvas =  Canvas.createCanvas(1000, 900),
         ctx = canvas.getContext('2d'),
         avatar = await Canvas.loadImage(mess.author.displayAvatarURL({ format: 'jpg' })),
@@ -104,7 +129,7 @@ drawWinnersCanvas = async (winners, contest) => {
         ctx.strokeText(mess.author.username, 200, 790)
         ctx.fillText(mess.author.username, 200, 790)
 
-        //----------| ADDING IMAGE |----------135 685
+        //----------| ADDING IMAGE |----------
         ctx.drawImage(art, 225, 135, 550, 550)
 
 
@@ -116,9 +141,9 @@ drawWinnersCanvas = async (winners, contest) => {
         ctx.drawImage(avatar, 825, 725, 100, 100)
 
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "winner.png")
-        mess.channel.send({files: [attachment]})
-        .then(msg => msg.pin().then(msg => msg.delete())) // pin message and delete information about bot pinning message
-    })   
+        await mess.channel.send({files: [attachment]})
+        .then(msg => msg.pin()) // pin message [\[\[ and delete information about bot pinning message ]/]/]
+    }))
 }
 
 

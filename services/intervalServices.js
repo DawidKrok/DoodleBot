@@ -1,4 +1,5 @@
 const { Server } = require('../db/schemes')
+const { showWinners } = require('./doodleServices')
 
 /** @TODO : Probably gonna change that to serve multiple guilds */
 
@@ -12,8 +13,13 @@ getInterval = async mess => {
 
 /** @Updates : interval.days value in database      |=|  !set  @days  |=|*/
 setInterval = async (mess, days) => {
-    if(!days || days <= 0)  
+    if(days < 0 || !Number.isInteger(Number(days)))  
         return mess.channel.send("`Invalid argument [DAYS]`")
+
+    // starting next contest
+    else if(days == 0) 
+        return showWinners(mess.channel, true)
+    
 
     const server = await Server.findOne()
 

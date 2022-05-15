@@ -21,13 +21,17 @@ empty = new MessageEmbed()
     .setTitle("CONTESTS LIST IS EMPTY!")
     .setDescription(`Use \`${process.env.PREFIX}add [NAME]\` to change that`),
 
+noArt = new MessageEmbed()
+    .setColor(alertColor)
+    .setTitle("THERE WAS NO ART SUBMITTED FOR THIS CONTEST!"),
+
 artSubmitted = new MessageEmbed()
-.setColor(mainColor)
-.setTitle("ART SUCCESSFULLY SUBMITTED!"),
+    .setColor(mainColor)
+    .setTitle("ART SUCCESSFULLY SUBMITTED!"),
 
 tie = new MessageEmbed()
-.setColor(mainColor)
-.setTitle("IT'S A TIE!"),
+    .setColor(mainColor)
+    .setTitle("IT'S A TIE!"),
 
 help = new MessageEmbed()
     .setColor(mainColor)
@@ -81,6 +85,7 @@ module.exports = {
     error,
     notAuthorized,
     empty,
+    noArt,
     artSubmitted,
     tie,
     help,
