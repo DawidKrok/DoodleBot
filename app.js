@@ -2,6 +2,8 @@ require('dotenv').config()
 require("./loaders/mongoose")
 const Discord = require("discord.js")
 const doodleServices = require("./services/doodleServices")
+const Cron = require('cron')
+const { Server } = require('./db/schemes')
 
 const messHandler = require("./handlers/messageHandler")
 
@@ -20,16 +22,21 @@ client.on('messageCreate', messHandler)
  *  - total points on winner banner
  *  - doodle icon
  *  - more servers compatibility
+ *  - determine at what time to check winners
  */
 // check for contests winners every day
+const checkWinners = new Cron.CronJob('0 0 0 * * *', async () => {
+    const server = await Server.findOne().lean()
+    // difference in days
+    difference = Math.ceil((new Date().getTime() - server.lastContestAt.getTime()) / (1000 * 3600 * 24))
+    // compare difference to interval 
+    
+    if(difference >= server.interval)
+        doodleServices.showWinners(client)
+})
 
 
-
-
-
-
-
-
+checkWinners.start()
 
 
 

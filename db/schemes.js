@@ -10,7 +10,7 @@ const serverSchema = new mongoose.Schema({
     namesList: [String],
     // IDs of currently submitted arts
     messIds: [String], 
-    days: {
+    interval: {
         type: Number,
         default: 3
     },

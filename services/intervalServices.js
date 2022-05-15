@@ -8,7 +8,7 @@ const { showWinners } = require('./doodleServices')
 getInterval = async mess => {
     const server = await Server.findOne().lean()
 
-    mess.channel.send(`\`Current interval is ${server.days} days\``)
+    mess.channel.send(`\`Current interval is ${server.interval} days\``)
 }
 
 /** @Updates : interval.days value in database      |=|  !set  @days  |=|*/
@@ -23,7 +23,7 @@ setInterval = async (mess, days) => {
 
     const server = await Server.findOne()
 
-    server.days = days
+    server.interval = days
     await server.save()
 
     mess.channel.send(`Interval successfully changed to ${days} days!`)

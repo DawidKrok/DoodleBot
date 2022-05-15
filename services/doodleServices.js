@@ -85,6 +85,7 @@ showWinners = async (client, is_channel = false) => {
         channel.send({embeds: [embeds.noArt]})
 
     server.messIds = []
+    server.lastContestAt = new Date().toISOString().split('T')[0] // reset date of last contest
     // ------------| NEXT CONTEST |-----------
     // remove current contest from list
     server.namesList.shift()
