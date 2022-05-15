@@ -1,10 +1,13 @@
 const mongoose = require("mongoose")
 
 const serverSchema = new mongoose.Schema({    
-    guildId: Number,
-    channelId: Number,
+    guildId: {
+        type: String,
+        unique: true
+    },
+    // channelId: Number,
     // Roles that have access to extra commands
-    authorizedRolesIds: [Number], 
+    authorizedRolesIds: [String], 
     
     // list of all scheduled contests
     namesList: [String],
