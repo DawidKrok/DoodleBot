@@ -119,7 +119,7 @@ makeContestInfoEmbed = (name, description, rules, date, extra_info=true) => {
         value: rules 
     })
 
-    if(date)  embed.addField({
+    if(date)  embed.addFields({
         name: `DEADLINE:`,
         value:  date
     })

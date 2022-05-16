@@ -3,7 +3,7 @@ const { Server } = require('../db/schemes')
 const embeds = require('./embeds')
 const Canvas = require('canvas')
 
-const r1 = '🔥', r2='🎨', r3='🧐', r4 = '🦎'
+const r1 ='🔥', r2='🎨', r3='🧐', r4 = '🦎'
 
 let background
 Canvas.loadImage('./rescources/winners_bg.png').then(img => background = img) // path like for app.js
@@ -33,7 +33,6 @@ addEntry = async (server, mess) => {
  * @is_channel : whether client is channel or discord client */
 showWinners = async (channel) => {
     const server = await Server.findOne({channelId: channel.id})
-    console.log(server)
 
     // --------------| DETERMINING WINNER |-------------
     if(server.messIds.length != 0) {
@@ -45,7 +44,6 @@ showWinners = async (channel) => {
             .then(mess => {
                 r = mess.reactions.cache
                 score = r.get(r1).count + r.get(r2).count + r.get(r3).count + r.get(r4).count - 4
-                console.log(score)
     
                 if(score > highest_score) {
                     winners = [mess] // reset winners array

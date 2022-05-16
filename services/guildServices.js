@@ -1,5 +1,6 @@
-const { ObjectId } = require("mongoose")
 const { Server } = require("../db/schemes")
+
+// TODO: default channel
 
 // for settuping a new guild
 addServer = guild => {
@@ -26,7 +27,7 @@ addRole = async (server, mess, role_name) => {
     // find role by id
     const role = mess.guild.roles.cache.find(r => r.name == role_name)
     if(!role) 
-        return mess.channel.send(`\`Role ${role_name} not found\``)
+        return mess.channel.send(`\`Role "${role_name}" not found\``)
 
     // add role id to list
     server.authorizedRolesIds.push(role.id)
@@ -44,7 +45,7 @@ removeRole = async (server, mess, role_name) => {
     // find role by id
     const role = mess.guild.roles.cache.find( r => r.name == role_name)
     if(!role) 
-        return mess.channel.send(`\`Role ${role_name} not found\``)
+        return mess.channel.send(`\`Role "${role_name}" not found\``)
 
     // filter will leave only ids that are not id of role from input
     server.authorizedRolesIds = server.authorizedRolesIds.filter(id => id != role.id)
@@ -63,7 +64,7 @@ setChannel = async (server, mess, channel_name) => {
     // find role by id
     const channel = mess.guild.channels.cache.find(r => r.name == channel_name)
     if(!channel) 
-        return mess.channel.send(`\`Channel ${channel_name} not found\``)
+        return mess.channel.send(`\`Channel "${channel_name}" not found\``)
 
     // add role id to list
     server.channelId = channel.id

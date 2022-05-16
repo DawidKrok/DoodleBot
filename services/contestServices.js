@@ -51,7 +51,7 @@ addContest = async (mess, name) => {
 
     name = name.replace(/_/g, ' ')
 
-    Server.updateOne({guildId: mess.guild.id}, {
+    Server.updateOne({guildId: mess.guild.id, 'contestsList.name': {$ne: name}}, {
         $addToSet: {contestsList: {name: name}}
     }, (err, data) => {
         if(err) return console.log(err)

@@ -12,10 +12,7 @@ const serverSchema = new mongoose.Schema({
     // list of all scheduled contests
     contestsList: [{
         _id: false,
-        name: {
-            type: String,
-            unique: true
-        },
+        name: String,
         description: String,
         rules: String
     }],
