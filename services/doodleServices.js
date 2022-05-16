@@ -67,7 +67,7 @@ showWinners = async (channel) => {
         if(winners.length > 1)
             channel.send({embeds: [embeds.tie]})
     
-        await drawWinnersCanvas(winners, server.namesList[0])
+        await drawWinnersCanvas(winners, server.contestsList[0]?.name)
 
     } else // noone submitted art :c
         channel.send({embeds: [embeds.noArt]})
@@ -86,13 +86,14 @@ showWinners = async (channel) => {
     server.lastContestAt.setDate(server.lastContestAt.getDate() + server.interval)
     const nextDate = server.lastContestAt.toISOString().split('T')[0]
     
+    channel.send("NEW CONTEST:")
     // send information about next contest
     channel.send({embeds: [
-        embeds.makeContestInfoEmbed(contestsList[0].name, contestsList[0].description, nextDate)
+        embeds.makeContestInfoEmbed(server.contestsList[0].name, server.contestsList[0].description, server.contestsList[0].rules, nextDate)
     ]})
 }
 /** draws a picture with winning art, name of @contest and author's name and avatar   */
-drawWinnersCanvas = async (winners, contest) => {
+drawWinnersCanvas = async (winners, contest_name) => {
     await Promise.all(winners.map(async mess => {
         const canvas =  Canvas.createCanvas(1000, 900),
         ctx = canvas.getContext('2d'),
@@ -109,8 +110,8 @@ drawWinnersCanvas = async (winners, contest) => {
         ctx.fillStyle = "white"
         // Contest Name
         ctx.lineWidth = 14
-        ctx.strokeText(contest, 300, 85)
-        ctx.fillText(contest, 300, 85)
+        ctx.strokeText(contest_name, 300, 85)
+        ctx.fillText(contest_name, 300, 85)
         // Author Name
         ctx.font = "50px 'Roboto'"
         ctx.strokeText(mess.author.username, 200, 790)

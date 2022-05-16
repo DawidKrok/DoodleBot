@@ -7,7 +7,7 @@ const embeds = require('./embeds')
 */
 
 // &&&&&&&&&&&&&&&& | GETTING DATA | &&&&&&&&&&&&&&&
-/** @Sends : list of all contests     |=|  !list contests  |=| */
+/** @Shows : list of all contests     |=|  !list  |=| */
 listContests = async (server, mess) => {
     contests = server.contestsList 
 
@@ -27,6 +27,19 @@ listContests = async (server, mess) => {
     })
 
     mess.channel.send({embeds: [listEmbed]})
+}
+
+/** @Shows : name, description and rules of contest    |=|  !info @name  |=| */
+showContestInfo = (server, mess, name) => {
+    contest = server.contestsList.filter(c => c.name == name)[0]
+
+    if(!contest)
+        return mess.channel.send(`\`There is no contest with name "${name}"!\``)
+
+    // send information about contest
+    mess.channel.send({embeds: [
+        embeds.makeContestInfoEmbed(name, contest.description, contest.rules, false, false) // false for date and false for extra data
+    ]})
 }
 
 
@@ -162,14 +175,11 @@ changeOrder = (array, order) => {
     // add all names that were not included in order (only if there's still something to add because array.slice(0) returns whole array)
     return array.length == updatedList.length? updatedList : updatedList.concat(array.slice(updatedList.length - array.length))
 }
-/** ==================| ENDING CONTEST |================ */
-// endContest = () => {
-//
-// }
 
 module.exports = {
-    addContest,
     listContests,
+    showContestInfo,
+    addContest,
     deleteContest,
     setDescription,
     setRules,

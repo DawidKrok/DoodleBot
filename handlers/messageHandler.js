@@ -44,6 +44,10 @@ const messHandler = async mess => {
             case 'list':
                 await contestServices.listContests(server, mess) 
                 break
+            // -------------| SHOW INFO |---------------
+            case 'info':
+                await contestServices.showContestInfo(server, mess, args[0]) 
+                break
             // -------------| ADD CONTEST |---------------
             case 'add': 
                 if(authorized)
