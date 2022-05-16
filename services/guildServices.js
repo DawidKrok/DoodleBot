@@ -1,11 +1,17 @@
 const { Server } = require("../db/schemes")
 
-// TODO: default channel
+/** TODO:
+ * - check what happend when channel gets deleted (onChannelDeleted event?)
+*/
 
 // for settuping a new guild
 addServer = guild => {
+    // find the first text channel on the server
+    let channel = guild.channels.cache.filter(ch => ch.type == 'GUILD_TEXT').first()
+
     const server = new Server({
         guildId: guild.id,
+        channelId: channel?.id // in case no text channel is on server
     })
     
     console.log("Joined guild "+guild.name)
