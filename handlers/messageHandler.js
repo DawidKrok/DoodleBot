@@ -17,7 +17,7 @@ const messHandler = async mess => {
         const args = mess.content.slice(prefix.length).split(/ +/)
         const command = args.shift().toLowerCase() // get the first string from args
 
-        const server = await Server.findOne({guildId: mess.guild.id}).lean() 
+        const server = await Server.findOne({guildId: mess.guild.id})
 
         // determine if user is authorized
         authorized = mess.guild.ownerId == mess.author.id // if author is owner
@@ -35,55 +35,55 @@ const messHandler = async mess => {
             case 'help':
                 mess.channel.send({embeds: [embeds.help]})
                 break
-            // -------------| SUBMIT |---------------
+            // -------------| SUBMIT ART |---------------
             case 'submit':
-                await doodleServices.addEntry(mess)
+                await doodleServices.addEntry(server, mess)
                 break
-            // -------------| LIST |---------------
+            // -------------| LIST CONTESTS |---------------
             case 'list':
-                await contestServices.listContests(mess) 
+                await contestServices.listContests(server, mess) 
                 break
-            // -------------| ADD |---------------
-            case 'add': // there's only option for adding contests
+            // -------------| ADD CONTEST |---------------
+            case 'add': 
                 if(authorized)
                     await contestServices.addContest(mess, args[0])
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
-            // -----------| DELETE |--------------
+            // -----------| DELETE CONTEST |--------------
             case 'delete':
                 if(authorized)
                     await contestServices.deleteContest(mess, args[0])
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
-            // -----------| UPDATE |--------------
+            // -----------| UPDATE CONTEST ORDER |--------------
             case 'update':
                 if(authorized)
-                    await contestServices.updateContestList(mess, args)
+                    await contestServices.updateContestList(server, mess, args)
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
             // -------------| INTERVAL GET & SET |---------------
             case 'interval':
-                await intervalServices.getInterval(mess)
+                await intervalServices.getInterval(server, mess)
                 break
             case 'set':
                 if(authorized)
-                    await intervalServices.setInterval(mess, args[0])
+                    await intervalServices.setInterval(server, mess, args[0])
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
             // -------------| ADD / REMOVE ROLE |---------------
             case 'authorize':
                 if(authorized)
-                    await guildServices.addRole(mess, args[0])
+                    await guildServices.addRole(server, mess, args[0])
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
             case 'unauthorize':
                 if(authorized)
-                    await guildServices.removeRole(mess, args[0])
+                    await guildServices.removeRole(server, mess, args[0])
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break

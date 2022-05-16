@@ -80,11 +80,17 @@ help = new MessageEmbed()
         },
         {
             name: "`"+process.env.PREFIX+"update [ORDER]`\nUpdates ORDER of contests", 
-            value: "• ORDER - new arrangement of the list (e.g. Order of contests looks like: `1 2 3 4 5 6 7`, so to swap contests type `1 5 2 4 3`)\n(Doesn't affect the current contest)" 
+            value: "• ORDER - new arrangement of the list (e.g. Order of contests looks like: `1 2 3 4 5 6 7`, so to swap contests type `1 5 2 4 3`)\n(Doesn't affect the current contest)\n\n`AUTHORS:`" 
         },
         {
-            name: "`AUTHORS:`", 
-            value: "Doodle Bot made by [OMICRON](https://github.com/DawidKrok)" 
+            name: "Doodle Bot made by", 
+            value: "[OMICRON](https://github.com/DawidKrok)" ,
+            inline: true
+        },
+        {
+            name: "Art director:", 
+            value: "[RainJeanne](https://www.rainjeanne.com/)" ,
+            inline: true
         },
     )
 

@@ -17,13 +17,12 @@ removeServer = guild => {
     console.log("Left guild "+guild.name)
 }
 
-addRole = async (mess, role_name) => {
+addRole = async (server, mess, role_name) => {
     if(!role_name)  
         return mess.channel.send("`Invalid argument [ROLE]`")
 
-    const server = await Server.findOne({guildId: mess.guild.id})
     // find role by id
-    const role = mess.guild.roles.cache.find( r => r.name == role_name)
+    const role = mess.guild.roles.cache.find(r => r.name == role_name)
     // add role id to list
     server.authorizedRolesIds.push(role.id)
     await server.save()
@@ -31,11 +30,10 @@ addRole = async (mess, role_name) => {
     mess.channel.send(`\`${role_name}\` successfully authorized`)
 }
 
-removeRole = async (mess, role_name) => {
+removeRole = async (server, mess, role_name) => {
     if(!role_name)  
         return mess.channel.send("`Invalid argument [ROLE]`")
 
-    const server = await Server.findOne({guildId: mess.guild.id})
     // find role by id
     const role = mess.guild.roles.cache.find( r => r.name == role_name)
     // filter will leave only ids that are not id of role from input

@@ -26,7 +26,6 @@ client.on('guildDelete', guild => guildServices.removeServer(guild))
  *  - winner banner
  *  - total points on winner banner
  *  - doodle icon
- *  - more servers compatibility
  *  - determine at what time to check winners
  */
 // check for contests winners every day

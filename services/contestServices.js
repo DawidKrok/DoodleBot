@@ -8,9 +8,7 @@ const embeds = require('./embeds')
 
 // &&&&&&&&&&&&&&&& | GETTING DATA | &&&&&&&&&&&&&&&
 /** @Sends : list of all contests     |=|  !list contests  |=| */
-listContests = async mess => {
-    const server = await Server.findOne().lean()
-
+listContests = async (server, mess) => {
     contests = server.namesList // because Promise
 
     // if list is empty
@@ -42,7 +40,7 @@ addContest = async (mess, name) => {
 
     name = name.replace(/_/g, ' ')
 
-    Server.updateOne({}, {
+    Server.updateOne({guildId: mess.guild.id}, {
         $addToSet: {namesList: name}
     }, (err, data) => {
         if(err) return console.log(err)
@@ -62,7 +60,7 @@ deleteContest = async (mess, name) => {
 
         name = name.replace(/_/g, ' ')
 
-    Server.updateOne({}, {
+    Server.updateOne({guildId: mess.guild.id}, {
         $pull: {namesList: name}
     },(err, item) => {
         if(err) return console.log(err)
@@ -74,10 +72,8 @@ deleteContest = async (mess, name) => {
 }
 
 /** @Updates : order of contests (except the first/current one)     |=|  !update @order [, , , ] |=| */
-updateContestList = async (mess, order) => {
+updateContestList = async (server, mess, order) => {
     if(!order[0])    return mess.channel.send("`Invalid argument [ORDER]`")
-
-    server = await Server.findOne()
     
     try {
         server.namesList = changeOrder(server.namesList, order)
