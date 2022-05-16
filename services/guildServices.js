@@ -54,9 +54,28 @@ removeRole = async (server, mess, role_name) => {
 
 }
 
+setChannel = async (server, mess, channel_name) => {
+    if(!channel_name)  
+        return mess.channel.send("`Invalid argument [CHANNEL]`")
+
+    channel_name = channel_name.replace(/_/g, ' ') // replace '_' with spaces
+
+    // find role by id
+    const channel = mess.guild.channels.cache.find(r => r.name == channel_name)
+    if(!channel) 
+        return mess.channel.send(`\`Channel ${channel_name} not found\``)
+
+    // add role id to list
+    server.channelId = channel.id
+    await server.save()
+
+    mess.channel.send(`\`${channel_name}\` successfully set as contests channel`)
+}
+
 module.exports = {
     addServer,
     removeServer,
     addRole,
-    removeRole
+    removeRole,
+    setChannel
 }

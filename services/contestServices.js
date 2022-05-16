@@ -19,13 +19,11 @@ listContests = async (server, mess) => {
     .setColor(process.env.MAIN_COLOR)
     .setTitle(`CURRENT CONTEST TOPIC: ${contests.shift().name}`)
 
-    con_no = 1 // to track date
     // Add entry for every contest, with it's name and date
     contests.forEach(c => {
-        const c_date = new Date(server.lastContestAt.getTime()) // to make a clone
-        c_date.setDate(c_date.getDate() + con_no++*server.interval) // to increment date by interval.days
+        server.lastContestAt.setDate(server.lastContestAt.getDate() + server.interval) // to increment date by interval.days
         
-        listEmbed.addField("• "+c.name, c_date.toISOString().split('T')[0])  
+        listEmbed.addField("• "+c.name, server.lastContestAt.toISOString().split('T')[0])  
     })
 
     mess.channel.send({embeds: [listEmbed]})
@@ -53,7 +51,7 @@ addContest = async (mess, name) => {
     })
 }
 
-/** @Adds : new Contest to database     |=|  !add @name  |=|*/
+/** @Sets : description of contest     |=|  !description @name @description  |=|*/
 setDescription = async (server, mess, args) => {
     if(!args[0])  
         return mess.channel.send("`Invalid argument [NAME]`")
@@ -74,12 +72,13 @@ setDescription = async (server, mess, args) => {
     mess.channel.send(`Contest \`${name}\` successfully updated!`)
 }
 
+/** @Sets : rules of contest     |=|  !rules @name @rules  |=|*/
 setRules = async (server, mess, args) => {
     if(!args[0])  
         return mess.channel.send("`Invalid argument [NAME]`")
 
     if(!args[1])  
-        return mess.channel.send("`No [DESCRIPTION] provided`")
+        return mess.channel.send("`No [RULES] provided`")
 
     name = args.shift().replace(/_/g, ' ')
 

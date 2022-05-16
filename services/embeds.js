@@ -102,6 +102,36 @@ help = new MessageEmbed()
         },
     )
 
+makeContestInfoEmbed = (name, description, rules, date) => {
+    embed = new MessageEmbed()
+        .setColor(mainColor)
+        .setTitle(name)
+    
+    if(description)
+        embed.setDescription(`${description}\n\nDEADLINE: \`${date}\``)
+    else
+        embed.setDescription(`DEADLINE: \`${date}\``)
+
+    if(rules)
+        embed.addFields({
+            name: "RULES:", 
+            value: rules 
+        })
+
+    embed.addFields(
+        {
+            name: "HOW TO ENTER:", 
+            value: `Write \`${process.env.PREFIX}submit\` in this channel and attach your art!` 
+        },
+        {
+            name: "VOTING SYSTEM:", 
+            value: "Reacting with one of emojis listed below adds 1 point to the art's score:\n• 🧐 - for smart idea\n• 🔥 - for great execution\n• 🎨 - for visible skills\n• 🦎 - for lizard\nThe art with the most points at the end of the contest wins." 
+        },
+    )
+
+    return embed
+}
+
 module.exports = {
     error,
     notAuthorized,
@@ -110,4 +140,5 @@ module.exports = {
     artSubmitted,
     tie,
     help,
+    makeContestInfoEmbed
 }

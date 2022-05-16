@@ -37,7 +37,8 @@ const messHandler = async mess => {
                 break
             // -------------| SUBMIT ART |---------------
             case 'submit':
-                await doodleServices.addEntry(server, mess)
+                if(mess.channel.id == server.channelId)
+                    await doodleServices.addEntry(server, mess)
                 break
             // -------------| LIST CONTESTS |---------------
             case 'list':
@@ -96,6 +97,12 @@ const messHandler = async mess => {
             case 'unauthorize':
                 if(authorized)
                     await guildServices.removeRole(server, mess, args[0])
+                else 
+                    mess.channel.send({embeds: [embeds.notAuthorized]})   
+                break
+            case 'channel':
+                if(authorized)
+                    await guildServices.setChannel(server, mess, args[0])
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break

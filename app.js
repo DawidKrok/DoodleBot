@@ -28,15 +28,17 @@ client.on('guildDelete', guild => guildServices.removeServer(guild))
  *  - doodle icon
  *  - determine at what time to check winners
  */
-// check for contests winners every day
+// check for contests winners in every server every day
 const checkWinners = new Cron.CronJob('0 0 0 * * *', async () => {
-    const server = await Server.findOne().lean()
-    // difference in days
-    difference = Math.ceil((new Date().getTime() - server.lastContestAt.getTime()) / (1000 * 3600 * 24))
-    // compare difference to interval 
-    
-    if(difference >= server.interval)
-        doodleServices.showWinners(client)
+    servers = await Server.find({}).lean()
+    servers.forEach(server => {
+        // difference in days
+        difference = Math.ceil((new Date().getTime() - server.lastContestAt.getTime()) / (1000 * 3600 * 24))
+        
+        // compare difference to interval 
+        if(difference >= server.interval)
+            doodleServices.showWinners(client.channels.cache.get(server.channelId))
+    })
 })
 
 

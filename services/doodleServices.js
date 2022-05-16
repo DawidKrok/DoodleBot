@@ -31,14 +31,9 @@ addEntry = async (server, mess) => {
 
 /** showsWinners in every Server 
  * @is_channel : whether client is channel or discord client */
-showWinners = async (client, is_channel = false) => {
-    const server = await Server.findOne()
-
-    if(!is_channel) {
-        const guild = await client.guilds.cache.get(process.env.GUILD_ID)
-        channel = await guild.channels.cache.get(process.env.CHANNEL_ID)
-    } else 
-        channel = client
+showWinners = async (channel) => {
+    const server = await Server.findOne({channelId: channel.id})
+    console.log(server)
 
     // --------------| DETERMINING WINNER |-------------
     if(server.messIds.length != 0) {
@@ -74,24 +69,26 @@ showWinners = async (client, is_channel = false) => {
     
         await drawWinnersCanvas(winners, server.namesList[0])
 
-    } else // noone submited art :c
+    } else // noone submitted art :c
         channel.send({embeds: [embeds.noArt]})
 
     server.messIds = []
-    server.lastContestAt = new Date().toISOString().split('T')[0] // reset date of last contest
+    server.lastContestAt = new Date()//.toISOString().split('T')[0] // reset date of last contest
     // ------------| NEXT CONTEST |-----------
     // remove current contest from list
-    server.namesList.shift()
+    server.contestsList.shift()
     server.save()
         
-    if(server.namesList==0) // no contests on the list
+    if(server.contestsList==0) // no contests on the list
         return channel.send({embeds: [embeds.empty]})
 
+    // for embed purpose: determining deadline of new curr contest
+    server.lastContestAt.setDate(server.lastContestAt.getDate() + server.interval)
+    const nextDate = server.lastContestAt.toISOString().split('T')[0]
+    
     // send information about next contest
     channel.send({embeds: [
-        new Discord.MessageEmbed()
-            .setColor(process.env.MAIN_COLOR)
-            .setTitle(`The next contest is: ${server.namesList[0]}`)
+        embeds.makeContestInfoEmbed(contestsList[0].name, contestsList[0].description, nextDate)
     ]})
 }
 /** draws a picture with winning art, name of @contest and author's name and avatar   */

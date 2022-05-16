@@ -16,7 +16,7 @@ setInterval = async (server, mess, days) => {
 
     // starting next contest
     else if(days == 0) 
-        return showWinners(mess.channel, true)
+        return showWinners(server.channelId)
 
     server.interval = days
     await server.save()

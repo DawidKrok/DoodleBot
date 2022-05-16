@@ -5,7 +5,7 @@ const serverSchema = new mongoose.Schema({
         type: String,
         unique: true
     },
-    // channelId: Number,
+    channelId: String,
     // Roles that have access to extra commands
     authorizedRolesIds: [String], 
     
