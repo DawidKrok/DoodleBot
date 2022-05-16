@@ -21,8 +21,13 @@ addRole = async (server, mess, role_name) => {
     if(!role_name)  
         return mess.channel.send("`Invalid argument [ROLE]`")
 
+    role_name = role_name.replace(/_/g, ' ') // replace '_' with spaces
+
     // find role by id
     const role = mess.guild.roles.cache.find(r => r.name == role_name)
+    if(!role) 
+        return mess.channel.send(`\`Role ${role_name} not found\``)
+
     // add role id to list
     server.authorizedRolesIds.push(role.id)
     await server.save()
@@ -34,8 +39,13 @@ removeRole = async (server, mess, role_name) => {
     if(!role_name)  
         return mess.channel.send("`Invalid argument [ROLE]`")
 
+    role_name = role_name.replace(/_/g, ' ') // replace '_' with spaces
+
     // find role by id
     const role = mess.guild.roles.cache.find( r => r.name == role_name)
+    if(!role) 
+        return mess.channel.send(`\`Role ${role_name} not found\``)
+
     // filter will leave only ids that are not id of role from input
     server.authorizedRolesIds = server.authorizedRolesIds.filter(id => id != role.id)
     await server.save()

@@ -60,19 +60,19 @@ help = new MessageEmbed()
         },
         {
             name: "`"+process.env.PREFIX+"authorize [ROLE_NAME]`\nAuthorizes a role  ", 
-            value: "• ROLE_NAME - name of the role to authorize. From now on everyone with this role can use commands from this list.\n(Owner of server is always authorized)"
+            value: "• ROLE_NAME - name of the role to authorize. From now on everyone with this role can use commands from this list. Use `_` for spaces\n(Owner of server is always authorized)"
         },
         {
             name: "`"+process.env.PREFIX+"unauthorize [ROLE_NAME]`\nUnauthorizes a role", 
-            value: "• ROLE_NAME - name of the role to unauthorize."
+            value: "• ROLE_NAME - name of the role to unauthorize. Use `_` for spaces"
         },
         {
             name: "`"+process.env.PREFIX+"add [NAME]`\nAdds contest to a list in database ", 
-            value: "• NAME - name of the contest to add. Use '_' for spaces (e.g. NAME `Cool_lizard` is converted to `Cool lizard`)."
+            value: "• NAME - name of the contest to add. Use `_` for spaces (e.g. NAME `Cool_lizard` is converted to `Cool lizard`)."
         },
         {
             name: "`"+process.env.PREFIX+"delete [NAME]`\ndeletes contest from list in database", 
-            value: "• NAME - name of the contest to delete. Use '_' for spaces \n(can't delete the current contest) \n(to delete a submitted art just remove it from chat)" 
+            value: "• NAME - name of the contest to delete. Use `_` for spaces \n(can't delete the current contest) \n(to delete a submitted art just remove it from chat)" 
         },
         {
             name: "`"+process.env.PREFIX+"set [DAYS]`\nSets the interval between contests", 
