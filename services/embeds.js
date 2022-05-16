@@ -71,6 +71,14 @@ help = new MessageEmbed()
             value: "• NAME - name of the contest to add. Use `_` for spaces (e.g. NAME `Cool_lizard` is converted to `Cool lizard`)."
         },
         {
+            name: "`"+process.env.PREFIX+"description [NAME] [DESCRIPTION]`\nSets description of a contest", 
+            value: "• NAME - name of the contest to update. Use `_` for spaces.\n• DESCRIPTION - new description of contest"
+        },
+        {
+            name: "`"+process.env.PREFIX+"rules [NAME] [RULES]`\nSets description of a contest", 
+            value: "• NAME - name of the contest to update. Use `_` for spaces.\n• RULES - new rules of contest"
+        },
+        {
             name: "`"+process.env.PREFIX+"delete [NAME]`\ndeletes contest from list in database", 
             value: "• NAME - name of the contest to delete. Use `_` for spaces \n(can't delete the current contest) \n(to delete a submitted art just remove it from chat)" 
         },

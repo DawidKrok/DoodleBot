@@ -10,7 +10,15 @@ const serverSchema = new mongoose.Schema({
     authorizedRolesIds: [String], 
     
     // list of all scheduled contests
-    namesList: [String],
+    contestsList: [{
+        _id: false,
+        name: {
+            type: String,
+            unique: true
+        },
+        description: String,
+        rules: String
+    }],
     // IDs of currently submitted arts
     messIds: [String], 
     interval: {

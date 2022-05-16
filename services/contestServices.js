@@ -3,13 +3,13 @@ const { Server } = require('../db/schemes')
 const embeds = require('./embeds')
 
 /** @TODO : 
- *  - _ as spaces
+ *  - unique contests
 */
 
 // &&&&&&&&&&&&&&&& | GETTING DATA | &&&&&&&&&&&&&&&
 /** @Sends : list of all contests     |=|  !list contests  |=| */
 listContests = async (server, mess) => {
-    contests = server.namesList // because Promise
+    contests = server.contestsList 
 
     // if list is empty
     if(!contests[0])
@@ -17,7 +17,7 @@ listContests = async (server, mess) => {
 
     const listEmbed = new MessageEmbed()
     .setColor(process.env.MAIN_COLOR)
-    .setTitle(`CURRENT CONTEST TOPIC: ${contests.shift()}`)
+    .setTitle(`CURRENT CONTEST TOPIC: ${contests.shift().name}`)
 
     con_no = 1 // to track date
     // Add entry for every contest, with it's name and date
@@ -25,7 +25,7 @@ listContests = async (server, mess) => {
         const c_date = new Date(server.lastContestAt.getTime()) // to make a clone
         c_date.setDate(c_date.getDate() + con_no++*server.interval) // to increment date by interval.days
         
-        listEmbed.addField("• "+c, c_date.toISOString().split('T')[0])  
+        listEmbed.addField("• "+c.name, c_date.toISOString().split('T')[0])  
     })
 
     mess.channel.send({embeds: [listEmbed]})
@@ -41,7 +41,7 @@ addContest = async (mess, name) => {
     name = name.replace(/_/g, ' ')
 
     Server.updateOne({guildId: mess.guild.id}, {
-        $addToSet: {namesList: name}
+        $addToSet: {contestsList: {name: name}}
     }, (err, data) => {
         if(err) return console.log(err)
 
@@ -53,6 +53,47 @@ addContest = async (mess, name) => {
     })
 }
 
+/** @Adds : new Contest to database     |=|  !add @name  |=|*/
+setDescription = async (server, mess, args) => {
+    if(!args[0])  
+        return mess.channel.send("`Invalid argument [NAME]`")
+
+    if(!args[1])  
+        return mess.channel.send("`No [DESCRIPTION] provided`")
+
+    name = args.shift().replace(/_/g, ' ')
+
+    index = server.contestsList.findIndex(con => con.name == name)
+
+    if(index < 0)
+        return mess.channel.send(`\`There is no contest with name "${name}"!\``)
+
+    server.contestsList[index].description = args.join(' ')
+
+    await server.save()
+    mess.channel.send(`Contest \`${name}\` successfully updated!`)
+}
+
+setRules = async (server, mess, args) => {
+    if(!args[0])  
+        return mess.channel.send("`Invalid argument [NAME]`")
+
+    if(!args[1])  
+        return mess.channel.send("`No [DESCRIPTION] provided`")
+
+    name = args.shift().replace(/_/g, ' ')
+
+    index = server.contestsList.findIndex(con => con.name == name)
+
+    if(index < 0)
+        return mess.channel.send(`\`There is no contest with name "${name}"!\``)
+
+    server.contestsList[index].rules = args.join(' ')
+
+    await server.save()
+    mess.channel.send(`Contest \`${name}\` successfully updated!`)
+}
+
 /** @Deletes : Contest from list in database based on it's name     |=|  !delete @name  |=| */
 deleteContest = async (mess, name) => {
     if(!name)  
@@ -61,7 +102,7 @@ deleteContest = async (mess, name) => {
         name = name.replace(/_/g, ' ')
 
     Server.updateOne({guildId: mess.guild.id}, {
-        $pull: {namesList: name}
+        $pull: {contestsList: {name: name}}
     },(err, item) => {
         if(err) return console.log(err)
 
@@ -131,6 +172,8 @@ module.exports = {
     addContest,
     listContests,
     deleteContest,
+    setDescription,
+    setRules,
     updateContestList,
     changeOrder
 }

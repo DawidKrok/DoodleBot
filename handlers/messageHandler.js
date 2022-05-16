@@ -57,6 +57,18 @@ const messHandler = async mess => {
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
+            case 'description':
+                if(authorized)
+                    await contestServices.setDescription(server, mess, args)
+                else 
+                    mess.channel.send({embeds: [embeds.notAuthorized]})   
+                break
+            case 'rules':
+                if(authorized)
+                    await contestServices.setRules(server, mess, args)
+                else 
+                    mess.channel.send({embeds: [embeds.notAuthorized]})   
+                break
             // -----------| UPDATE CONTEST ORDER |--------------
             case 'update':
                 if(authorized)
