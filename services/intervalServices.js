@@ -1,7 +1,4 @@
-const { Server } = require('../db/schemes')
 const { showWinners } = require('./doodleServices')
-
-/** @TODO : Probably gonna change that to serve multiple guilds */
 
 // &&&&&&&&&&&&&&&& | GETTING DATA | &&&&&&&&&&&&&&&
 /** @Sends : interval in days     |=|  !interval  |=| */

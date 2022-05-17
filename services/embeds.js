@@ -87,8 +87,12 @@ help = new MessageEmbed()
             value: "• NAME - name of the contest to delete. Use `_` for spaces \n(can't delete the current contest) \n(to delete a submitted art just remove it from chat)" 
         },
         {
+            name: "`"+process.env.PREFIX+"channel [CHANNEL_NAME]` - Changes channel for submitting art", 
+            value: "• CHANNEL_NAME - name of channel on which art shall be submitted and winners announced (by default the first text channel on server)" 
+        },
+        {
             name: "`"+process.env.PREFIX+"set [DAYS]` - Sets the interval between contests", 
-            value: "• DAYS - Number of days that each contest will take from now on (including current one).\n`WARNING:` If the current contest is already running longer than the newly set interval, it will end and the next one will start.\nSetting DAYS to '0' ends current contest without changing previously set interval" 
+            value: "• DAYS - number of days that each contest will take from now on (including current one).\n`WARNING:` If the current contest is already running longer than the newly set interval, it will end and the next one will start.\nSetting DAYS to '0' ends current contest without changing previously set interval" 
         },
         {
             name: "`"+process.env.PREFIX+"update [ORDER]` - Updates ORDER of contests", 

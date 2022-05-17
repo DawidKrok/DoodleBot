@@ -37,7 +37,8 @@ const messHandler = async mess => {
                 break
             // -------------| SUBMIT ART |---------------
             case 'submit':
-                if(mess.channel.id == server.channelId)
+                // if message was send on the right channel, or no channel was specified
+                if(mess.channel.id == server.channelId || !server.channelId )
                     await doodleServices.addEntry(server, mess)
                 break
             // -------------| LIST CONTESTS |---------------
@@ -104,6 +105,7 @@ const messHandler = async mess => {
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
+            // -------------| SET SONTESTS CHANNEL |---------------
             case 'channel':
                 if(authorized)
                     await guildServices.setChannel(server, mess, args[0])

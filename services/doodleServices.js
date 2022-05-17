@@ -3,10 +3,12 @@ const { Server } = require('../db/schemes')
 const embeds = require('./embeds')
 const Canvas = require('canvas')
 
+// TODO : remove strokes
+
 const r1 ='🔥', r2='🎨', r3='🧐', r4 = '🦎'
 
 let background
-Canvas.loadImage('./rescources/winners_bg.png').then(img => background = img) // path like for app.js
+Canvas.loadImage('./rescources/winner_banner.jpg').then(img => background = img) // path like for app.js
 Canvas.registerFont('./rescources/Roboto-Black.ttf', {family: "Roboto"}) // load Roboto font
 
 // &&&&&&&&&&&&&&&& | SETTING DATA | &&&&&&&&&&&&&&&
@@ -34,6 +36,8 @@ addEntry = async (server, mess) => {
 showWinners = async (channel) => {
     const server = await Server.findOne({channelId: channel.id})
 
+    if(!server.channelId)   return channel.send("Use `!channel [CHANNEL_NAME]` to specify a channel for art submissions and winners announces")
+
     // --------------| DETERMINING WINNER |-------------
     if(server.messIds.length != 0) {
         winners = [] // array of current contest winners
@@ -43,7 +47,7 @@ showWinners = async (channel) => {
             await channel.messages.fetch(m_id.toString())
             .then(mess => {
                 r = mess.reactions.cache
-                score = r.get(r1).count + r.get(r2).count + r.get(r3).count + r.get(r4).count - 4
+                score = r.get(r1)?.count + r.get(r2)?.count + r.get(r3)?.count + r.get(r4)?.count - 4
     
                 if(score > highest_score) {
                     winners = [mess] // reset winners array
@@ -65,9 +69,9 @@ showWinners = async (channel) => {
         if(winners.length > 1)
             channel.send({embeds: [embeds.tie]})
     
-        await drawWinnersCanvas(winners, server.contestsList[0]?.name)
+        await drawWinnersCanvas(winners, server.contestsList[0]?.name, highest_score)
 
-    } else // noone submitted art :c
+    } else // noone submitted art :c. in a case that contest ends, but bot was still assigning emotes to the only one submission, it won't fire (score = undefined => no winners) Not worth fixing
         channel.send({embeds: [embeds.noArt]})
 
     server.messIds = []
@@ -91,40 +95,56 @@ showWinners = async (channel) => {
     ]})
 }
 /** draws a picture with winning art, name of @contest and author's name and avatar   */
-drawWinnersCanvas = async (winners, contest_name) => {
+drawWinnersCanvas = async (winners, contest_name, score) => {
+    const avatar_x = 660, avatar_y = 2275, avatar_r = 100,
+    art_max_h = 1450, art_max_w = 2100
+
     await Promise.all(winners.map(async mess => {
-        const canvas =  Canvas.createCanvas(1000, 900),
+        const canvas =  Canvas.createCanvas(2500, 2500),
         ctx = canvas.getContext('2d'),
         avatar = await Canvas.loadImage(mess.author.displayAvatarURL({ format: 'jpg' })),
         art = await Canvas.loadImage(mess.attachments.first().attachment)
 
-        // put everything on canva
+        // put winner_banner on canvas
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
         
         //----------| PUTTING TEXT |----------
-        ctx.font = "75px 'Roboto'"
+        ctx.font = "225px 'Roboto'"
         ctx.strokeStyle = "rgb(27, 11, 59)"
         ctx.lineWidth = 20
         ctx.fillStyle = "white"
         // Contest Name
         ctx.lineWidth = 14
-        ctx.strokeText(contest_name, 300, 85)
-        ctx.fillText(contest_name, 300, 85)
+        // ctx.strokeText(contest_name, 550, 170)
+        ctx.fillText(`"${contest_name}"`, 570, 240)
+
         // Author Name
-        ctx.font = "50px 'Roboto'"
-        ctx.strokeText(mess.author.username, 200, 790)
-        ctx.fillText(mess.author.username, 200, 790)
+        ctx.font = "125px 'Roboto'"
+        // ctx.strokeText(mess.author.username, 200, 790)
+        ctx.fillText(mess.author.username, avatar_x + 150, avatar_y+50)
+
+        // points
+        ctx.textAlign = "center"
+        ctx.fillText(score, 1860, 2290)
+
 
         //----------| ADDING IMAGE |----------
-        ctx.drawImage(art, 225, 135, 550, 550)
+        aspectRatio = art.width/art.height
+
+        if(aspectRatio < 1) // vertical
+            ctx.drawImage(art, canvas.width/2 - art_max_h*aspectRatio/2, 300, art_max_h*aspectRatio, art_max_h)
+        else // horizontal
+            ctx.drawImage(art, 200, 1025 - art_max_w/aspectRatio/2, art_max_w, art_max_w/aspectRatio)
 
 
         //----------| AVATAR CY(R)CLE |----------
         ctx.beginPath()
-        ctx.arc(875, 775, 50, 0, Math.PI*2, true)
+        ctx.arc(avatar_x, avatar_y, avatar_r, 0, Math.PI*2, true)
         ctx.closePath()
         ctx.clip()
-        ctx.drawImage(avatar, 825, 725, 100, 100)
+        ctx.drawImage(avatar, avatar_x - avatar_r, avatar_y - avatar_r, 2*avatar_r, 2*avatar_r)
+
+
 
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "winner.png")
         await mess.channel.send({files: [attachment]})

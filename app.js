@@ -29,9 +29,11 @@ client.on('guildDelete', guild => guildServices.removeServer(guild))
  *  - determine at what time to check winners
  */
 // check for contests winners in every server every day
-const checkWinners = new Cron.CronJob('0 0 0 * * *', async () => {
+const checkWinners = new Cron.CronJob('0 * * * * *', async () => {
     servers = await Server.find({}).lean()
     servers.forEach(server => {
+        if(!server.channelId)   return // for now(?)(dunno what to do here)
+
         // difference in days
         difference = Math.ceil((new Date().getTime() - server.lastContestAt.getTime()) / (1000 * 3600 * 24))
         

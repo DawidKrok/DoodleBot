@@ -2,10 +2,6 @@ const { MessageEmbed } = require('discord.js')
 const { Server } = require('../db/schemes')
 const embeds = require('./embeds')
 
-/** @TODO : 
- *  - unique contests
-*/
-
 // &&&&&&&&&&&&&&&& | GETTING DATA | &&&&&&&&&&&&&&&
 /** @Shows : list of all contests     |=|  !list  |=| */
 listContests = async (server, mess) => {
