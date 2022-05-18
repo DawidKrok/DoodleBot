@@ -21,7 +21,10 @@ addEntry = async (server, mess) => {
     if(mess.attachments.first().contentType.split("/")[0] != 'image') // check if attachment is an image
         return mess.channel.send("`Attachment must be an image`")
 
-    mess.react(r1).then(()=>mess.react(r2).then(mess.react(r3).then(mess.react(r4))))
+    try {
+        // in case message is deleted during emotes assigning
+        mess.react(r1).then(()=>mess.react(r2).then(mess.react(r3).then(mess.react(r4))))
+    } catch(err) {}
     
     server.messIds.push(mess.id)
     await server.save()
@@ -131,7 +134,7 @@ drawWinnersCanvas = async (winners, contest_name, score) => {
         //----------| ADDING IMAGE |----------
         aspectRatio = art.width/art.height
 
-        if(aspectRatio < 1) // vertical
+        if(aspectRatio < art_max_w/art_max_h) // vertical
             ctx.drawImage(art, canvas.width/2 - art_max_h*aspectRatio/2, 300, art_max_h*aspectRatio, art_max_h)
         else // horizontal
             ctx.drawImage(art, 200, 1025 - art_max_w/aspectRatio/2, art_max_w, art_max_w/aspectRatio)
