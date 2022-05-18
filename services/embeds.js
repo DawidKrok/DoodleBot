@@ -100,7 +100,7 @@ help = new MessageEmbed()
         },
         {
             name: "Doodle Bot made by", 
-            value: "[OMICRON](https://github.com/DawidKrok)" ,
+            value: "[OMICRON](https://github.com/DawidKrok/DoodleBot)" ,
             inline: true
         },
         {
