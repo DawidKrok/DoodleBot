@@ -24,7 +24,7 @@ removeServer = guild => {
     console.log("Left guild "+guild.name)
 }
 
-addRole = async (mess, role_name) => {
+addRole = async (server, mess, role_name) => {
     if(!role_name)  
         return mess.channel.send("`Invalid argument [ROLE]`")
 
@@ -35,17 +35,14 @@ addRole = async (mess, role_name) => {
     if(!role) 
         return mess.channel.send(`\`Role "${role_name}" not found\``)
 
-    Server.updateOne({guildId: mess.guild.id}, {
-        $authorizedRolesIds: role.id
-    }, (err, data) => {
-        if(err) return console.log(err)
+    if(server.authorizedRolesIds.indexOf(role.id) >= 0)
+        return mess.channel.send(`\`"${role_name}" is already authorized!\``)
 
-        // if name was added there'll be modifiedCount set in data to 1
-        if(!data.modifiedCount)     // list wasn't modified => name was a duplicate  
-            return mess.channel.send(`\`"${role_name}" is already authorized!\``)
-        
-        mess.channel.send(`\`${role_name}\` successfully authorized`)
-    })
+    // add role id to list
+    server.authorizedRolesIds.push(role.id)
+    await server.save()
+
+    mess.channel.send(`\`${role_name}\` successfully authorized`)
 }
 
 removeRole = async (server, mess, role_name) => {

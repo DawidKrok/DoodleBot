@@ -95,7 +95,7 @@ const messHandler = async mess => {
             // -------------| ADD / REMOVE ROLE |---------------
             case 'authorize':
                 if(authorized)
-                    await guildServices.addRole(mess, args[0])
+                    await guildServices.addRole(server, mess, args[0])
                 else 
                     mess.channel.send({embeds: [embeds.notAuthorized]})   
                 break
