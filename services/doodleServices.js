@@ -3,7 +3,8 @@ const { Server } = require('../db/schemes')
 const embeds = require('./embeds')
 const Canvas = require('canvas')
 
-// TODO : remove strokes
+// TODO : remove strokes 
+// - message if there's no channelId
 
 const r1 ='🔥', r2='🎨', r3='🧐', r4 = '🦎'
 
@@ -78,7 +79,7 @@ showWinners = async (channel) => {
         channel.send({embeds: [embeds.noArt]})
 
     server.messIds = []
-    server.lastContestAt = new Date()//.toISOString().split('T')[0] // reset date of last contest
+    server.lastContestAt = new Date().toISOString().split('T')[0] // reset date of last contest
     // ------------| NEXT CONTEST |-----------
     // remove current contest from list
     server.contestsList.shift()

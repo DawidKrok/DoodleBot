@@ -22,14 +22,11 @@ client.on('guildCreate', guild => guildServices.addServer(guild))
 client.on('guildDelete', guild => guildServices.removeServer(guild))
 
 /** TODO :
- *  - determine prefered aspect ratio
- *  - winner banner
- *  - total points on winner banner
- *  - doodle icon
+ *  - fix craching on wrong permissions
  *  - determine at what time to check winners
  */
 // check for contests winners in every server every day
-const checkWinners = new Cron.CronJob('0 * * * * *', async () => {
+const checkWinners = new Cron.CronJob('0 0 0 * * *', async () => {
     servers = await Server.find({}).lean()
     servers.forEach(server => {
         if(!server.channelId)   return // for now(?)(dunno what to do here)
