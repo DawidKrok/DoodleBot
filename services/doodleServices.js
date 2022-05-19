@@ -9,8 +9,9 @@ const Canvas = require('canvas')
 const r1 ='🔥', r2='🎨', r3='🧐', r4 = '🦎'
 
 let background
-Canvas.loadImage('./rescources/winner_banner.jpg').then(img => background = img) // path like for app.js
-Canvas.registerFont('./rescources/Roboto-Black.ttf', {family: "Roboto"}) // load Roboto font
+Canvas.loadImage('./rescources/winner_banner.PNG').then(img => background = img) // path like for app.js
+Canvas.registerFont('./rescources/Roboto.ttf', {family: "Roboto"}) // load Roboto font
+Canvas.registerFont('./rescources/Handlee.ttf', {family: "Handlee"}) // load Handlee font
 
 // &&&&&&&&&&&&&&&& | SETTING DATA | &&&&&&&&&&&&&&&
 /** @Adds : new Entry to database     |=|  !submit @attached_image  |=|*/
@@ -22,10 +23,13 @@ addEntry = async (server, mess) => {
     if(mess.attachments.first().contentType.split("/")[0] != 'image') // check if attachment is an image
         return mess.channel.send("`Attachment must be an image`")
 
+    // --------------| ADD REACTIONS |--------------
     try {
-        // in case message is deleted during emotes assigning
-        mess.react(r1).then(()=>mess.react(r2).then(mess.react(r3).then(mess.react(r4))))
-    } catch(err) {}
+        if(!mess.channel.permissionsFor(mess.guild.me).has("ADD_REACTIONS")) 
+            mess.channel.send("Missing permission `ADD_REACTIONS`")
+        else
+            mess.react(r1).then(()=>mess.react(r2).then(mess.react(r3).then(mess.react(r4))))
+    } catch(err) {} // in case message is deleted during emotes assigning
     
     server.messIds.push(mess.id)
     await server.save()
@@ -41,6 +45,10 @@ showWinners = async (channel) => {
     const server = await Server.findOne({channelId: channel.id})
 
     if(!server.channelId)   return channel.send("Use `!channel [CHANNEL_NAME]` to specify a channel for art submissions and winners announces")
+
+    if(!channel.permissionsFor(channel.guild.me).has("ATTACH_FILES")) 
+            return channel.send("Missing permission `MANAGE_CHANNELS` (cannot attach winner banner)")
+
 
     // --------------| DETERMINING WINNER |-------------
     if(server.messIds.length != 0) {
@@ -80,6 +88,7 @@ showWinners = async (channel) => {
 
     server.messIds = []
     server.lastContestAt = new Date().toISOString().split('T')[0] // reset date of last contest
+    
     // ------------| NEXT CONTEST |-----------
     // remove current contest from list
     server.contestsList.shift()
@@ -98,7 +107,7 @@ showWinners = async (channel) => {
         embeds.makeContestInfoEmbed(server.contestsList[0].name, server.contestsList[0].description, server.contestsList[0].rules, nextDate)
     ]})
 }
-/** draws a picture with winning art, name of @contest and author's name and avatar   */
+/** draws a picture with winning art, name of @contest , points, author's name and avatar   */
 drawWinnersCanvas = async (winners, contest_name, score) => {
     const avatar_x = 660, avatar_y = 2275, avatar_r = 100,
     art_max_h = 1450, art_max_w = 2100
@@ -113,18 +122,13 @@ drawWinnersCanvas = async (winners, contest_name, score) => {
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
         
         //----------| PUTTING TEXT |----------
-        ctx.font = "225px 'Roboto'"
-        ctx.strokeStyle = "rgb(27, 11, 59)"
-        ctx.lineWidth = 20
         ctx.fillStyle = "white"
         // Contest Name
-        ctx.lineWidth = 14
-        // ctx.strokeText(contest_name, 550, 170)
+        ctx.font = "900 225px 'Handlee'"
         ctx.fillText(`"${contest_name}"`, 570, 240)
 
         // Author Name
-        ctx.font = "125px 'Roboto'"
-        // ctx.strokeText(mess.author.username, 200, 790)
+        ctx.font = "900 125px 'Roboto'"
         ctx.fillText(mess.author.username, avatar_x + 150, avatar_y+50)
 
         // points
@@ -152,7 +156,12 @@ drawWinnersCanvas = async (winners, contest_name, score) => {
 
         const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "winner.png")
         await mess.channel.send({files: [attachment]})
-        .then(msg => msg.pin()) // pin message [\[\[ and delete information about bot pinning message ]/]/]
+        .then(msg => {
+            if(!mess.channel.permissionsFor(mess.guild.me).has("MANAGE_CHANNELS")) 
+                return mess.channel.send("Missing permission `MANAGE_CHANNELS` (cannot pin winners)")
+            
+            msg.pin()
+        }) // pin message [\[\[ and delete information about bot pinning message ]/]/]
     }))
 }
 

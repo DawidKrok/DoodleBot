@@ -27,6 +27,8 @@ listContests = async (server, mess) => {
 
 /** @Shows : name, description and rules of contest    |=|  !info @name  |=| */
 showContestInfo = (server, mess, name) => {
+    name = name.replace(/_/g, ' ')
+
     contest = server.contestsList.filter(c => c.name == name)[0]
 
     if(!contest)

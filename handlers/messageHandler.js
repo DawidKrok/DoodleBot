@@ -12,7 +12,17 @@ const messHandler = async mess => {
     try {
         // check if message was not meant for bot (doesn't starts with the prefix) or was send by a bot
         if(!mess.content.startsWith(prefix) || mess.author.bot) return
+
+        // ==============| CHECKING PERMISSIONS |==============
+        if(!mess.channel.permissionsFor(mess.guild.me).has("SEND_MESSAGES")) return // not permitted to send messages
         
+        if(!mess.channel.permissionsFor(mess.guild.me).has("EMBED_LINKS")) 
+            return mess.channel.send("Missing permission `EMBED_LINKS` (cannot attach embeds)")
+
+        if(!mess.channel.permissionsFor(mess.guild.me).has("READ_MESSAGE_HISTORY")) 
+            return mess.channel.send("Missing permission `READ_MESSAGE_HISTORY`")
+
+
         // ==============| COMMAND & ARGUMENTS |==============
         const args = mess.content.slice(prefix.length).split(/ +/)
         const command = args.shift().toLowerCase() // get the first string from args
@@ -114,7 +124,9 @@ const messHandler = async mess => {
                 break
         }
     } catch (err) {
-        mess.channel.send({embeds: [embeds.error]})
+        try {
+            mess.channel.send({embeds: [embeds.error]})
+        } catch(err) {}
         console.log(err)
     }
 }
