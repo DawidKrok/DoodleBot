@@ -21,8 +21,8 @@ client.on('guildCreate', guild => guildServices.addServer(guild))
 // on leaving guild
 client.on('guildDelete', guild => guildServices.removeServer(guild))
 
+
 /** TODO :
- *  - fix craching on wrong permissions
  *  - determine at what time to check winners
  */
 // check for contests winners in every server every day
@@ -35,7 +35,7 @@ const checkWinners = new Cron.CronJob('0 0 0 * * *', async () => {
         difference = Math.ceil((new Date().getTime() - server.lastContestAt.getTime()) / (1000 * 3600 * 24))
         
         // compare difference to interval 
-        if(difference >= server.interval)
+        if(difference >= server.interval) 
             doodleServices.showWinners(client.channels.cache.get(server.channelId))
     })
 })

@@ -79,7 +79,7 @@ help = new MessageEmbed()
             value: "• NAME - name of the contest to update. Use `_` for spaces.\n• DESCRIPTION - new description of contest (doesn't need `_` for spaces)"
         },
         {
-            name: "`"+process.env.PREFIX+"rules [NAME] [RULES]` - Sets description of a contest", 
+            name: "`"+process.env.PREFIX+"rules [NAME] [RULES]` - Sets rules of a contest", 
             value: "• NAME - name of the contest to update. Use `_` for spaces.\n• RULES - new rules of contest (doesn't need `_` for spaces)"
         },
         {

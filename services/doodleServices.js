@@ -3,8 +3,9 @@ const { Server } = require('../db/schemes')
 const embeds = require('./embeds')
 const Canvas = require('canvas')
 
-// TODO : remove strokes 
+// TODO :
 // - message if there's no channelId
+// - fit too long text to banner
 
 const r1 ='🔥', r2='🎨', r3='🧐', r4 = '🦎'
 
@@ -42,9 +43,11 @@ addEntry = async (server, mess) => {
 /** showsWinners in every Server 
  * @is_channel : whether client is channel or discord client */
 showWinners = async (channel) => {
-    const server = await Server.findOne({channelId: channel.id})
+    if(!channel) return
 
-    if(!server.channelId)   return channel.send("Use `!channel [CHANNEL_NAME]` to specify a channel for art submissions and winners announces")
+    const server = await Server.findOne({channelId: channel.id})
+    
+    if(!server)   return channel.send("Use `!channel [CHANNEL_NAME]` to specify a channel for art submissions and winners announces")
 
     if(!channel.permissionsFor(channel.guild.me).has("ATTACH_FILES")) 
             return channel.send("Missing permission `MANAGE_CHANNELS` (cannot attach winner banner)")
@@ -88,7 +91,7 @@ showWinners = async (channel) => {
 
     server.messIds = []
     server.lastContestAt = new Date().toISOString().split('T')[0] // reset date of last contest
-    
+
     // ------------| NEXT CONTEST |-----------
     // remove current contest from list
     server.contestsList.shift()
