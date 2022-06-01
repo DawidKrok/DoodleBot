@@ -27,17 +27,21 @@ client.on('guildDelete', guild => guildServices.removeServer(guild))
  */
 // check for contests winners in every server every day
 const checkWinners = new Cron.CronJob('0 0 0 * * *', async () => {
-    servers = await Server.find({}).lean()
-    servers.forEach(server => {
-        if(!server.channelId)   return // for now(?)(dunno what to do here)
-
-        // difference in days
-        difference = Math.ceil((new Date().getTime() - server.lastContestAt.getTime()) / (1000 * 3600 * 24))
-        
-        // compare difference to interval 
-        if(difference >= server.interval) 
-            doodleServices.showWinners(client.channels.cache.get(server.channelId))
-    })
+    try {
+        servers = await Server.find({}).lean()
+        servers.forEach(server => {
+            if(!server.channelId)   return // for now(?)(dunno what to do here)
+    
+            // difference in days
+            difference = Math.ceil((new Date().getTime() - server.lastContestAt.getTime()) / (1000 * 3600 * 24))
+            
+            // compare difference to interval 
+            if(difference >= server.interval) 
+                doodleServices.showWinners(client.channels.cache.get(server.channelId))
+        })
+    } catch (err) {
+        console.log("Error while trying to execute checkWinners CronJob: ", err)
+    }
 })
 
 

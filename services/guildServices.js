@@ -1,9 +1,5 @@
 const { Server } = require("../db/schemes")
 
-/** TODO:
- * - check what happend when channel gets deleted (onChannelDeleted event?)
-*/
-
 // for settuping a new guild
 addServer = guild => {
     // find the first text channel on the server

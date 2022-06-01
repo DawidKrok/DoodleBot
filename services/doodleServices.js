@@ -112,7 +112,8 @@ showWinners = async (channel) => {
 }
 /** draws a picture with winning art, name of @contest , points, author's name and avatar   */
 drawWinnersCanvas = async (winners, contest_name, score) => {
-    const avatar_x = 660, avatar_y = 2275, avatar_r = 100,
+    const contest_name_x = 570, contest_name_y = 240,
+    avatar_x = 660, avatar_y = 2275, avatar_r = 100,
     art_max_h = 1450, art_max_w = 2100
 
     await Promise.all(winners.map(async mess => {
@@ -127,15 +128,16 @@ drawWinnersCanvas = async (winners, contest_name, score) => {
         //----------| PUTTING TEXT |----------
         ctx.fillStyle = "white"
         // Contest Name
-        ctx.font = "900 225px 'Handlee'"
-        ctx.fillText(`"${contest_name}"`, 570, 240)
+        ctx.font = getFittingFont(`"${contest_name}"`, fontface='Handlee', width= canvas.width-contest_name_x, max_fontsize=225, context = ctx)
+        ctx.fillText(`"${contest_name}"`, contest_name_x, contest_name_y)
 
         // Author Name
-        ctx.font = "900 125px 'Roboto'"
+        ctx.font = getFittingFont(mess.author.username, fontface='Roboto', width=910, max_fontsize=125, context = ctx)
         ctx.fillText(mess.author.username, avatar_x + 150, avatar_y+50)
 
         // points
         ctx.textAlign = "center"
+        ctx.font = "125px 'Roboto'"
         ctx.fillText(score, 1860, 2290)
 
 
@@ -166,6 +168,18 @@ drawWinnersCanvas = async (winners, contest_name, score) => {
             msg.pin()
         }) // pin message [\[\[ and delete information about bot pinning message ]/]/]
     }))
+}
+
+// function by markE from StackOverflow
+getFittingFont = (text, fontface, width, max_fontsize, context) => {
+    fontsize = max_fontsize+1
+
+    do {
+        fontsize--
+        context.font = fontsize + "px " + fontface
+    } while (context.measureText(text).width > width)
+
+    return fontsize + "px " + fontface
 }
 
 
