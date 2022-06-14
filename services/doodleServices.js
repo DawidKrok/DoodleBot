@@ -3,9 +3,6 @@ const { Server } = require('../db/schemes')
 const embeds = require('./embeds')
 const Canvas = require('canvas')
 
-// TODO :
-// - message if there's no channelId
-// - fit too long text to banner
 
 const r1 ='🔥', r2='🎨', r3='🧐', r4 = '🦎'
 
@@ -95,7 +92,7 @@ showWinners = async (channel) => {
     // ------------| NEXT CONTEST |-----------
     // remove current contest from list
     server.contestsList.shift()
-    server.save()
+    await server.save()
         
     if(server.contestsList==0) // no contests on the list
         return channel.send({embeds: [embeds.empty]})
